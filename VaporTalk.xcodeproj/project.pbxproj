@@ -1,0 +1,307 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5362BCB41E8CEAE500D81666 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5362BCB31E8CEAE500D81666 /* AppDelegate.swift */; };
+		5362BCB61E8CEAE500D81666 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5362BCB51E8CEAE500D81666 /* ViewController.swift */; };
+		5362BCB91E8CEAE500D81666 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5362BCB71E8CEAE500D81666 /* Main.storyboard */; };
+		5362BCBB1E8CEAE500D81666 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5362BCBA1E8CEAE500D81666 /* Assets.xcassets */; };
+		5362BCBE1E8CEAE500D81666 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5362BCBC1E8CEAE500D81666 /* LaunchScreen.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		5362BCB01E8CEAE500D81666 /* VaporTalk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VaporTalk.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5362BCB31E8CEAE500D81666 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		5362BCB51E8CEAE500D81666 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		5362BCB81E8CEAE500D81666 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		5362BCBA1E8CEAE500D81666 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5362BCBD1E8CEAE500D81666 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		5362BCBF1E8CEAE500D81666 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5362BCAD1E8CEAE500D81666 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5362BCA71E8CEAE500D81666 = {
+			isa = PBXGroup;
+			children = (
+				5362BCB21E8CEAE500D81666 /* VaporTalk */,
+				5362BCB11E8CEAE500D81666 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5362BCB11E8CEAE500D81666 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5362BCB01E8CEAE500D81666 /* VaporTalk.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5362BCB21E8CEAE500D81666 /* VaporTalk */ = {
+			isa = PBXGroup;
+			children = (
+				5362BCB31E8CEAE500D81666 /* AppDelegate.swift */,
+				5362BCB51E8CEAE500D81666 /* ViewController.swift */,
+				5362BCB71E8CEAE500D81666 /* Main.storyboard */,
+				5362BCBA1E8CEAE500D81666 /* Assets.xcassets */,
+				5362BCBC1E8CEAE500D81666 /* LaunchScreen.storyboard */,
+				5362BCBF1E8CEAE500D81666 /* Info.plist */,
+			);
+			path = VaporTalk;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5362BCAF1E8CEAE500D81666 /* VaporTalk */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5362BCC21E8CEAE500D81666 /* Build configuration list for PBXNativeTarget "VaporTalk" */;
+			buildPhases = (
+				5362BCAC1E8CEAE500D81666 /* Sources */,
+				5362BCAD1E8CEAE500D81666 /* Frameworks */,
+				5362BCAE1E8CEAE500D81666 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VaporTalk;
+			productName = VaporTalk;
+			productReference = 5362BCB01E8CEAE500D81666 /* VaporTalk.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5362BCA81E8CEAE500D81666 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0820;
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = "이상윤";
+				TargetAttributes = {
+					5362BCAF1E8CEAE500D81666 = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = MN225LJUH9;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 5362BCAB1E8CEAE500D81666 /* Build configuration list for PBXProject "VaporTalk" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 5362BCA71E8CEAE500D81666;
+			productRefGroup = 5362BCB11E8CEAE500D81666 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5362BCAF1E8CEAE500D81666 /* VaporTalk */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5362BCAE1E8CEAE500D81666 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5362BCBE1E8CEAE500D81666 /* LaunchScreen.storyboard in Resources */,
+				5362BCBB1E8CEAE500D81666 /* Assets.xcassets in Resources */,
+				5362BCB91E8CEAE500D81666 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5362BCAC1E8CEAE500D81666 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5362BCB61E8CEAE500D81666 /* ViewController.swift in Sources */,
+				5362BCB41E8CEAE500D81666 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		5362BCB71E8CEAE500D81666 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5362BCB81E8CEAE500D81666 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		5362BCBC1E8CEAE500D81666 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5362BCBD1E8CEAE500D81666 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		5362BCC01E8CEAE500D81666 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		5362BCC11E8CEAE500D81666 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5362BCC31E8CEAE500D81666 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = MN225LJUH9;
+				INFOPLIST_FILE = VaporTalk/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sangyoon.VaporTalk;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		5362BCC41E8CEAE500D81666 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = MN225LJUH9;
+				INFOPLIST_FILE = VaporTalk/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sangyoon.VaporTalk;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5362BCAB1E8CEAE500D81666 /* Build configuration list for PBXProject "VaporTalk" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5362BCC01E8CEAE500D81666 /* Debug */,
+				5362BCC11E8CEAE500D81666 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5362BCC21E8CEAE500D81666 /* Build configuration list for PBXNativeTarget "VaporTalk" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5362BCC31E8CEAE500D81666 /* Debug */,
+				5362BCC41E8CEAE500D81666 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5362BCA81E8CEAE500D81666 /* Project object */;
+}
