@@ -42,25 +42,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FIRMessagingDelegate {
         }
         
         application.registerForRemoteNotifications()
-        // [END register_for_notifications]
-        
-        
-        // [START add_token_refresh_observer]
-        // Add observer for InstanceID token refresh callback.
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.tokenRefreshNotification),
-                                               name: .firInstanceIDTokenRefresh,
-                                               object: nil)
-        // [END add_token_refresh_observer]
+        NotificationCenter.default.addObserver(self, selector: #selector(self.tokenRefreshNotification), name: .firInstanceIDTokenRefresh, object: nil)
 
         GIDSignIn.sharedInstance().clientID = FIRApp.defaultApp()?.options.clientID
-        
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
-        
         FIRAuth.auth()?.addStateDidChangeListener { auth, user in
             if user != nil {
                 print("Automatic Sign In: \(user?.email ?? "")")
-                self.setUserData((user?.uid)!)
+                
+                if (UserDefaults.standard.object(forKey: "lastUid") as? String) == nil {
+                    UserDefaults.standard.setValue("", forKey: "lastUid")
+                }
+
+                if (UserDefaults.standard.object(forKey: "lastUid") as! String) == (user?.uid)! {
+                    self.moveMainVC((user?.uid)!)
+                }
+                else {
+                    self.setUserData((user?.uid)!)
+                }
             } else {
                 let storyboard = UIStoryboard(name: "Main", bundle: nil)
                 let initialViewController = storyboard.instantiateViewController(withIdentifier: "IndexViewController")
@@ -73,7 +72,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FIRMessagingDelegate {
     func setUserData(_ uid: String) {
         let ref = FIRDatabase.database().reference()
         let userRef = ref.child("users").child(uid)
-        userRef.updateChildValues(["fcm": FIRInstanceID.instanceID().token() ?? ""])
         userRef.observeSingleEvent(of: .value, with: { (snapshot) in
             if let dic = snapshot.value as? [String: AnyObject] {
                 let user = UserDefaults.standard
@@ -85,28 +83,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FIRMessagingDelegate {
                 user.set(dic["isNearAgree"] as! String, forKey: "isNearAgree")
                 user.set(dic["isCommerceAgree"] as! String, forKey: "isCommerceAgree")
                 
-                self.checkUpdateFriend(uid)
+                self.resetFriends()
+                self.updateFriends(uid)
             }
         }, withCancel: { (error) in
             print(error)
         })
     }
     
-    func checkUpdateFriend(_ uid: String) {
-        if (UserDefaults.standard.object(forKey: "lastUid") as? String) == nil {
-            UserDefaults.standard.setValue(uid, forKey: "lastUid")
-        }
-        
-        if (UserDefaults.standard.object(forKey: "lastUid") as! String) == uid {
-            self.moveMainVC(uid)
-        }
-        else {
-            updateFriends(uid)
-        }
-    }
-    
-    func updateFriends(_ uid: String) {
-        let ref = FIRDatabase.database().reference()
+    func resetFriends() {
         let delegate = (UIApplication.shared.delegate as! AppDelegate)
         let context = delegate.persistentContainer.viewContext
         
@@ -120,6 +105,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FIRMessagingDelegate {
         } catch {
             print("error")
         }
+    }
+    
+    func updateFriends(_ uid: String) {
+        let ref = FIRDatabase.database().reference()
+        let delegate = (UIApplication.shared.delegate as! AppDelegate)
+        let context = delegate.persistentContainer.viewContext
         
         ref.child("friends").child(uid).observeSingleEvent(of: .value, with: { (friendSnapshot) in
             if let dic = friendSnapshot.value as? [String: AnyObject] {
@@ -157,6 +148,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FIRMessagingDelegate {
         GIDSignIn.sharedInstance().handle(url, sourceApplication: options[UIApplicationOpenURLOptionsKey.sourceApplication] as! String!, annotation: options[UIApplicationOpenURLOptionsKey.annotation])
         return handled
     }
+    
     
     // [START receive_message]
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {

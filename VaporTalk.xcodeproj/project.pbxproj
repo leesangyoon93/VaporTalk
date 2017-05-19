@@ -197,6 +197,7 @@
 		5362BCB21E8CEAE500D81666 /* VaporTalk */ = {
 			isa = PBXGroup;
 			children = (
+				53EE6BE61ECF2C8C005E930E /* Protocol */,
 				53BEB1CC1EA0821400D7A3AD /* Model */,
 				53BEB1CE1EA0825400D7A3AD /* IndexVC */,
 				53BEB1CF1EA0827200D7A3AD /* MainVC */,
@@ -236,12 +237,6 @@
 				53D340A11ECD9E8E0033D57D /* Event.swift */,
 				53EE6BDD1ECE05C3005E930E /* AnonymousModel.swift */,
 				53D340A51ECDC2440033D57D /* EventModel.swift */,
-				53EE6BDB1ECE05AD005E930E /* AnonymousUpdateDelegate.swift */,
-				53B31E061EA6489600A1E5B3 /* VaporChangeDelegate.swift */,
-				53EE6BE31ECF075C005E930E /* DetailVaporChangeDelegate.swift */,
-				53D340A71ECDC2F90033D57D /* EventChangeDelegate.swift */,
-				53EE6BD91ECDD2B3005E930E /* EventImageChangeDelegate.swift */,
-				53D340A31ECDB7DB0033D57D /* SendCompleteDelegate.swift */,
 				53B31E041EA5E79200A1E5B3 /* VaporModel.swift */,
 				5362CCED1E90BEA900D81666 /* UserModel.swift */,
 			);
@@ -301,6 +296,19 @@
 				53AEE48A1EA4E32600B8FB3D /* FriendChoiceTableViewCell.swift */,
 			);
 			name = SendVaporVC;
+			sourceTree = "<group>";
+		};
+		53EE6BE61ECF2C8C005E930E /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				53EE6BDB1ECE05AD005E930E /* AnonymousUpdateDelegate.swift */,
+				53B31E061EA6489600A1E5B3 /* VaporChangeDelegate.swift */,
+				53EE6BE31ECF075C005E930E /* DetailVaporChangeDelegate.swift */,
+				53D340A71ECDC2F90033D57D /* EventChangeDelegate.swift */,
+				53EE6BD91ECDD2B3005E930E /* EventImageChangeDelegate.swift */,
+				53D340A31ECDB7DB0033D57D /* SendCompleteDelegate.swift */,
+			);
+			name = Protocol;
 			sourceTree = "<group>";
 		};
 		D199A2AF9F604D0421327A89 /* Pods */ = {

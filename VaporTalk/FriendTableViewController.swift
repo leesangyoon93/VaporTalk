@@ -78,6 +78,12 @@ class FriendTableViewController: UITableViewController, UITextFieldDelegate, NVA
         }
     }
     
+    func updateUserFCM() {
+        let ref = FIRDatabase.database().reference()
+        let userRef = ref.child("users").child(UserDefaults.standard.object(forKey: "uid") as! String)
+        userRef.updateChildValues(["fcm": FIRInstanceID.instanceID().token() ?? ""])
+    }
+    
     func sendVaporTouched() {
         self.performSegue(withIdentifier: "SendVaporSegue", sender: nil)
     }
@@ -125,8 +131,6 @@ class FriendTableViewController: UITableViewController, UITextFieldDelegate, NVA
 }
 
 extension FriendTableViewController {
-    
-    // 친구 삭제. 베이퍼 다이렉트 전송 넣어야 함.
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         if indexPath.section == 1 {
             let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (action, index) in
