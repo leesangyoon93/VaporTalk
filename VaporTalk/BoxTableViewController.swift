@@ -26,13 +26,13 @@ class BoxTableViewController: UITableViewController, VaporChangeDelegate {
         super.viewDidLoad()
         setUI()
     
-        model.delegate = self
+        model.vaporChangeDelegate = self
         
         loadVaporIndicator?.startAnimating()
         model.fetchVapors()
     }
     
-    func onDataChange() {
+    func didChange() {
         self.vapors = self.model.getAllVapors()
         
         nameArr = [String]()
@@ -54,7 +54,7 @@ class BoxTableViewController: UITableViewController, VaporChangeDelegate {
                     var activeCount = 0
                     var notActiveCount = 0
                     for vapor in self.vapors[uid]! {
-                        if vapor.getIsActive() {
+                        if vapor.isActive! {
                             activeCount = activeCount + 1
                         }
                         else {
@@ -152,7 +152,6 @@ class BoxTableViewController: UITableViewController, VaporChangeDelegate {
             
             let keys = Array(vapors.keys)
             let uid = keys[(self.tableView.indexPathForSelectedRow)!.row]
-            //detailVaporVC.vapors = self.vapors[uid]!
             detailVaporVC.uid = uid
         }
     }

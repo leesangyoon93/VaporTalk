@@ -13,6 +13,7 @@ import FirebaseStorageUI
 
 class FriendChoiceTableViewController: UITableViewController, UISearchResultsUpdating {
 
+    let vaporModel = VaporModel()
     var sendVaporIndicator: NVActivityIndicatorView?
     var friends = [Friend]()
     var filterFriends = [Friend]()
@@ -52,31 +53,19 @@ class FriendChoiceTableViewController: UITableViewController, UISearchResultsUpd
         sendVaporIndicator?.startAnimating()
         var completeCount = 0
         for target in selectedFriends {
-            let key = Int(Date.timeIntervalSinceReferenceDate * 1000)
-            let storage = FIRStorage.storage().reference().child("contents").child("\(target.uid!)/\(key)")
-            let metadata = FIRStorageMetadata()
-            metadata.contentType = "image/jpeg"
+            let imageName = Int(Date.timeIntervalSinceReferenceDate * 1000)
+            let dateFormatter = DateFormatter()
+            dateFormatter.timeStyle = .medium
+            dateFormatter.dateStyle = .long
             
-            if let uploadData = UIImageJPEGRepresentation(selectImage!, 0.5) {
-                storage.put(uploadData, metadata: metadata, completion: { (metadata, error) in
-                    if error != nil {
-                        return
-                    }
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.timeStyle = .medium
-                    dateFormatter.dateStyle = .long
-                    
-                    let vapor = Vapor(UserDefaults.standard.object(forKey: "uid") as! String, target.uid!, (metadata?.name)!, self.timer!, true, dateFormatter.string(from: Date()), "\(key)")
-                    
-                    if vapor.sendVapor() {
-                       completeCount = completeCount + 1
-                    }
-                    
-                    if completeCount == self.selectedFriends.count {
-                        self.sendVaporIndicator?.stopAnimating()
-                        self.showAlertDialog(title: "베이퍼 전송 완료", message: "친구들에게 베이퍼 전송이 완료되었습니다.")
-                    }
-                })
+            let vapor = Vapor(UserDefaults.standard.object(forKey: "uid") as! String, target.uid!, "\(imageName)", self.timer!, true, dateFormatter.string(from: Date()))
+            
+            vaporModel.sendVapor(vapor: vapor, vaporImage: selectImage!)
+            completeCount = completeCount + 1
+            
+            if completeCount == self.selectedFriends.count {
+                self.sendVaporIndicator?.stopAnimating()
+                self.showAlertDialog(title: "베이퍼 전송 완료", message: "친구들에게 베이퍼 전송이 완료되었습니다.")
             }
         }
     }

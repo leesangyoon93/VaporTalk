@@ -31,6 +31,10 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setUI()
+    }
+    
+    func setUI() {
         registerButton.layer.cornerRadius = 5
         registerButton.layer.masksToBounds = true
         nameTextField.becomeFirstResponder()
@@ -80,11 +84,11 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
         passwordCheckImgView.isHidden = false
         let currentPassword: String = passwordTextField.text!
         if passwordCheckTextField.text == currentPassword {
-            passwordCheckImgView.image = UIImage(named: "checked.png")
+            passwordCheckImgView.image = #imageLiteral(resourceName: "checked.png")
             isPasswordValid = true
         }
         else {
-            passwordCheckImgView.image = UIImage(named: "x-button.png")
+            passwordCheckImgView.image = #imageLiteral(resourceName: "clear-button")
             isPasswordValid = false
         }
     }

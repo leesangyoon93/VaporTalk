@@ -47,9 +47,9 @@ class SearchFriendViewController: UIViewController {
     }
     
     func addFriendButtonTouched(sender: UIButton) {
-        let anonymous = self.searchResults[sender.tag]
+        var anonymous = self.searchResults[sender.tag]
         let title = "친구 추가 확인"
-        let message = "\(anonymous.getName()) 님을 친구로 등록하시겠습니까?"
+        let message = "\(anonymous.name!) 님을 친구로 등록하시겠습니까?"
         
         let popup = Popup.newPopup(title, message)
         let buttonOne = CancelButton(title: "CANCEL") { }
@@ -97,10 +97,10 @@ extension SearchFriendViewController: UITableViewDelegate, UITableViewDataSource
         let profileImageReference = storage.reference(withPath: "default-user.png")
         
         cell.searchFriendProfileImage.sd_setImage(with: profileImageReference, placeholderImage: #imageLiteral(resourceName: "circle-user-7.png"))
-        cell.searchFriendNameLabel.text = anonymous.getName()
-        cell.searchFriendEmailLabel.text = anonymous.getEmail()
+        cell.searchFriendNameLabel.text = anonymous.name!
+        cell.searchFriendEmailLabel.text = anonymous.email!
         
-        if anonymous.getIsFriend() {
+        if anonymous.isFriend! {
             cell.addFriendButton.setTitle("베프", for: UIControlState())
         }
         else {
@@ -126,14 +126,15 @@ extension SearchFriendViewController: UISearchBarDelegate {
         self.searchResults.removeAll()
         
         for anonymous in anonymousList {
+            var anonymousUser = anonymous
             for friend in self.friends {
-                if anonymous.getUID() == friend.uid {
-                    anonymous.setIsFriend(true)
+                if anonymousUser.UID! == friend.uid {
+                    anonymousUser.setIsFriend(true)
                 }
             }
-            if anonymous.getEmail().lowercased().contains((searchBar.text?.lowercased())!)
-                && anonymous.getUID() != (UserDefaults.standard.object(forKey: "uid") as! String) {
-                self.searchResults.append(anonymous)
+            if anonymousUser.email!.lowercased().contains((searchBar.text?.lowercased())!)
+                && anonymousUser.UID! != (UserDefaults.standard.object(forKey: "uid") as! String) {
+                self.searchResults.append(anonymousUser)
             }
         }
         self.searchTableView.reloadData()

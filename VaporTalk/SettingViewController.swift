@@ -20,9 +20,37 @@ class SettingViewController: UIViewController {
     }
 
     @IBAction func nearUserSwitchChanged(_ sender: Any) {
+        let user = UserDefaults.standard
+        var isNearAgree = "true"
+        if !nearUserSwitch.isOn {
+            isNearAgree = "false"
+        }
+        user.set(isNearAgree, forKey: "isNearAgree")
+        
+        updateNearUserAgree(isNearAgree)
+    }
+    
+    func updateNearUserAgree(_ isAgree: String) {
+        let ref = FIRDatabase.database().reference()
+        let userRef = ref.child("users").child(UserDefaults.standard.object(forKey: "uid") as! String)
+        userRef.updateChildValues(["isNearAgree": isAgree])
     }
     
     @IBAction func timeCommerceSwitchChanged(_ sender: Any) {
+        let user = UserDefaults.standard
+        var isCommerceAgree = "true"
+        if !timeCommerceSwitch.isOn {
+            isCommerceAgree = "false"
+        }
+        user.set(isCommerceAgree, forKey: "isCommerceAgree")
+        
+        updateCommerceAgree(isCommerceAgree)
+    }
+    
+    func updateCommerceAgree(_ isAgree: String) {
+        let ref = FIRDatabase.database().reference()
+        let userRef = ref.child("users").child(UserDefaults.standard.object(forKey: "uid") as! String)
+        userRef.updateChildValues(["isCommerceAgree": isAgree])
     }
     
     @IBAction func LogoutTouched(_ sender: Any) {

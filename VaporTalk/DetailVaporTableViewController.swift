@@ -20,33 +20,33 @@ class DetailVaporTableViewController: UITableViewController, VaporChangeDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        model.delegate = self
+        model.vaporChangeDelegate = self
         
         model.fetchDetailVapors(uid!)
         sortVapor()
         setUI()
     }
     
-    func onVaporUpdated() {
+    func didUpdated() {
         self.vapors = model.getDetailVapors(uid!)
         sortVapor()
     }
     
     func sortVapor() {
         vapors.sort { (object1, object2) -> Bool in
-            if object1.getIsActive() == object2.getIsActive() {
+            if object1.isActive! == object2.isActive! {
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
-                let object1Timestamp = dateFormatter.date(from: object1.getTimestamp())
-                let object2Timestamp = dateFormatter.date(from: object2.getTimestamp())
+                let object1Timestamp = dateFormatter.date(from: object1.timestamp!)
+                let object2Timestamp = dateFormatter.date(from: object2.timestamp!)
                 let diffTime1 = Int(Date().timeIntervalSince(object1Timestamp!))
                 let diffTime2 = Int(Date().timeIntervalSince(object2Timestamp!))
-                let remainTime1 = "\(Int(object1.getTimer()) - diffTime1)"
-                let remainTime2 = "\(Int(object2.getTimer()) - diffTime2)"
+                let remainTime1 = "\(Int(object1.timer!) - diffTime1)"
+                let remainTime2 = "\(Int(object2.timer!) - diffTime2)"
                 return remainTime1 < remainTime2
             }
             else {
-                return object1.getIsActive() == true
+                return object1.isActive! == true
             }
         }
         self.tableView.reloadData()
@@ -101,20 +101,19 @@ extension DetailVaporTableViewController {
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
-        let vaporTimestamp = dateFormatter.date(from: vapors[indexPath.row].getTimestamp())
+        let vaporTimestamp = dateFormatter.date(from: vapors[indexPath.row].timestamp!)
         let diffTime = Int(Date().timeIntervalSince(vaporTimestamp!))
-        let remainTime = Int(vapors[indexPath.row].getTimer()) - diffTime
+        let remainTime = Int(vapors[indexPath.row].timer!) - diffTime
         
-        setCellAttr(cell, vapors[indexPath.row].getIsActive())
+        setCellAttr(cell, vapors[indexPath.row].isActive!)
         
-        if vapors[indexPath.row].getIsActive() {
-            cell.vaporTimestampLabel.text = vapors[indexPath.row].getTimestamp()
+        if vapors[indexPath.row].isActive! {
+            cell.vaporTimestampLabel.text = vapors[indexPath.row].timestamp!
             cell.remainTimerLabel.text = getTimeString(seconds: remainTime)
             
             let storage = FIRStorage.storage()
-            let contentsRef = storage.reference(withPath: "contents/\(UserDefaults.standard.object(forKey: "uid") as! String)/\(uid!)/\(vapors[indexPath.row].getContents())")
-            
-            cell.contentImgView.sd_setImage(with: contentsRef)
+            let contentsRef = storage.reference(withPath: "vapor/\(UserDefaults.standard.object(forKey: "uid") as! String)/\(uid!)/\(vapors[indexPath.row].contents!)")
+            cell.contentImgView.sd_setImage(with: contentsRef, placeholderImage: #imageLiteral(resourceName: "NoImageAvailable"))
         }
         else {
             cell.logLabel.text = "\(getTimeString(seconds: diffTime)) 전에 베이퍼가 왔었습니다."

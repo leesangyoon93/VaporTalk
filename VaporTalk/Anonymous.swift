@@ -6,15 +6,15 @@
 //  Copyright © 2017년 이상윤. All rights reserved.
 //
 
-class Anonymous: NSObject {
-    private let UID: String?
-    private let name: String?
-    private let email: String?
-    private let profileImage: String?
-    private let tel: String?
-    private var isFriend: Bool?
+struct Anonymous {
+    var UID: String?
+    var name: String?
+    var email: String?
+    var profileImage: String?
+    var tel: String?
+    var isFriend: Bool?
     
-    override init() {
+    init() {
         self.UID = ""
         self.name = ""
         self.email = ""
@@ -32,26 +32,7 @@ class Anonymous: NSObject {
         self.isFriend = isFriend
     }
     
-    public func getUID() -> String {
-        return self.UID!
-    }
-    public func getName() -> String {
-        return self.name!
-    }
-    public func getEmail() -> String {
-        return self.email!
-    }
-    public func getProfileImage() -> String {
-        return self.profileImage!
-    }
-    public func getTel() -> String {
-        return self.tel!
-    }
-    public func getIsFriend() -> Bool {
-        return self.isFriend!
-    }
-    
-    public func setIsFriend(_ isFriend: Bool) {
+    mutating func setIsFriend(_ isFriend: Bool) {
         self.isFriend = isFriend
     }
 }

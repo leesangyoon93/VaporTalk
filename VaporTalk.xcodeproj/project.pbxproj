@@ -31,7 +31,6 @@
 		5362BCD21E8CF23E00D81666 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5362BCCE1E8CF23E00D81666 /* FBSDKLoginKit.framework */; };
 		5362BCD31E8CF23E00D81666 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5362BCCF1E8CF23E00D81666 /* FBSDKShareKit.framework */; };
 		5362BCD51E8CF24800D81666 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5362BCD41E8CF24800D81666 /* AdSupport.framework */; };
-		5362BD411E8FE74600D81666 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5362BD401E8FE74600D81666 /* EventViewController.swift */; };
 		5362BD431E8FE75400D81666 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5362BD421E8FE75400D81666 /* SettingViewController.swift */; };
 		5362CCEC1E8FEE3F00D81666 /* FriendTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5362CCEB1E8FEE3F00D81666 /* FriendTableViewCell.swift */; };
 		5362CCEE1E90BEA900D81666 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5362CCED1E90BEA900D81666 /* UserModel.swift */; };
@@ -54,9 +53,20 @@
 		53BEB1D51EA0C65600D7A3AD /* SearchFriendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53BEB1D41EA0C65600D7A3AD /* SearchFriendViewController.swift */; };
 		53BEB1D71EA0D33D00D7A3AD /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53BEB1D61EA0D33D00D7A3AD /* SearchTableViewCell.swift */; };
 		53BEB1DB1EA1003F00D7A3AD /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53BEB1DA1EA1003F00D7A3AD /* MainViewController.swift */; };
+		53D340981ECD98270033D57D /* EventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D340971ECD98270033D57D /* EventTableViewController.swift */; };
+		53D3409A1ECD98410033D57D /* EventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D340991ECD98410033D57D /* EventTableViewCell.swift */; };
+		53D3409C1ECD9C2B0033D57D /* SendEventNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D3409B1ECD9C2B0033D57D /* SendEventNavigationViewController.swift */; };
+		53D3409E1ECD9C650033D57D /* SendEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D3409D1ECD9C650033D57D /* SendEventViewController.swift */; };
+		53D340A21ECD9E8E0033D57D /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D340A11ECD9E8E0033D57D /* Event.swift */; };
+		53D340A41ECDB7DB0033D57D /* SendCompleteDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D340A31ECDB7DB0033D57D /* SendCompleteDelegate.swift */; };
+		53D340A61ECDC2440033D57D /* EventModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D340A51ECDC2440033D57D /* EventModel.swift */; };
+		53D340A81ECDC2F90033D57D /* EventChangeDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D340A71ECDC2F90033D57D /* EventChangeDelegate.swift */; };
 		53D69A271EA7D01800A450A2 /* DetailVaporTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D69A261EA7D01800A450A2 /* DetailVaporTableViewCell.swift */; };
 		53D69A291EA7D02400A450A2 /* DetailVaporTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D69A281EA7D02400A450A2 /* DetailVaporTableViewController.swift */; };
 		53D69A2B1EA7D9CF00A450A2 /* DetailVaporViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D69A2A1EA7D9CF00A450A2 /* DetailVaporViewController.swift */; };
+		53EE6BDA1ECDD2B3005E930E /* EventImageChangeDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53EE6BD91ECDD2B3005E930E /* EventImageChangeDelegate.swift */; };
+		53EE6BDC1ECE05AD005E930E /* AnonymousUpdateDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53EE6BDB1ECE05AD005E930E /* AnonymousUpdateDelegate.swift */; };
+		53EE6BDE1ECE05C3005E930E /* AnonymousModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53EE6BDD1ECE05C3005E930E /* AnonymousModel.swift */; };
 		67E6F094EAE3850C2325D0BC /* Pods_VaporTalk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D9C4BDE7AD68093A0F6A4D9 /* Pods_VaporTalk.framework */; };
 /* End PBXBuildFile section */
 
@@ -91,7 +101,6 @@
 		5362BCCF1E8CF23E00D81666 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = ../../../Documents/FacebookSDK/FBSDKShareKit.framework; sourceTree = "<group>"; };
 		5362BCD41E8CF24800D81666 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		5362BCDB1E8D1DE300D81666 /* VaporTalk-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "VaporTalk-Bridging-Header.h"; sourceTree = "<group>"; };
-		5362BD401E8FE74600D81666 /* EventViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		5362BD421E8FE75400D81666 /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		5362CCEB1E8FEE3F00D81666 /* FriendTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendTableViewCell.swift; sourceTree = "<group>"; };
 		5362CCED1E90BEA900D81666 /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
@@ -114,9 +123,20 @@
 		53BEB1D41EA0C65600D7A3AD /* SearchFriendViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchFriendViewController.swift; sourceTree = "<group>"; };
 		53BEB1D61EA0D33D00D7A3AD /* SearchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTableViewCell.swift; sourceTree = "<group>"; };
 		53BEB1DA1EA1003F00D7A3AD /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		53D340971ECD98270033D57D /* EventTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTableViewController.swift; sourceTree = "<group>"; };
+		53D340991ECD98410033D57D /* EventTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTableViewCell.swift; sourceTree = "<group>"; };
+		53D3409B1ECD9C2B0033D57D /* SendEventNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendEventNavigationViewController.swift; sourceTree = "<group>"; };
+		53D3409D1ECD9C650033D57D /* SendEventViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendEventViewController.swift; sourceTree = "<group>"; };
+		53D340A11ECD9E8E0033D57D /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		53D340A31ECDB7DB0033D57D /* SendCompleteDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendCompleteDelegate.swift; sourceTree = "<group>"; };
+		53D340A51ECDC2440033D57D /* EventModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventModel.swift; sourceTree = "<group>"; };
+		53D340A71ECDC2F90033D57D /* EventChangeDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventChangeDelegate.swift; sourceTree = "<group>"; };
 		53D69A261EA7D01800A450A2 /* DetailVaporTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailVaporTableViewCell.swift; sourceTree = "<group>"; };
 		53D69A281EA7D02400A450A2 /* DetailVaporTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailVaporTableViewController.swift; sourceTree = "<group>"; };
 		53D69A2A1EA7D9CF00A450A2 /* DetailVaporViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailVaporViewController.swift; sourceTree = "<group>"; };
+		53EE6BD91ECDD2B3005E930E /* EventImageChangeDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventImageChangeDelegate.swift; sourceTree = "<group>"; };
+		53EE6BDB1ECE05AD005E930E /* AnonymousUpdateDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnonymousUpdateDelegate.swift; sourceTree = "<group>"; };
+		53EE6BDD1ECE05C3005E930E /* AnonymousModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnonymousModel.swift; sourceTree = "<group>"; };
 		A5E834CA92C79028D259F6A8 /* Pods-VaporTalk.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VaporTalk.release.xcconfig"; path = "Pods/Target Support Files/Pods-VaporTalk/Pods-VaporTalk.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -222,7 +242,14 @@
 				53594BB31E9F875900CC705C /* Anonymous.swift */,
 				53594BB11E9F52D200CC705C /* Vapor.swift */,
 				53BEB1D21EA09F4A00D7A3AD /* Popup.swift */,
+				53D340A11ECD9E8E0033D57D /* Event.swift */,
+				53EE6BDD1ECE05C3005E930E /* AnonymousModel.swift */,
+				53D340A51ECDC2440033D57D /* EventModel.swift */,
+				53EE6BDB1ECE05AD005E930E /* AnonymousUpdateDelegate.swift */,
 				53B31E061EA6489600A1E5B3 /* VaporChangeDelegate.swift */,
+				53D340A71ECDC2F90033D57D /* EventChangeDelegate.swift */,
+				53EE6BD91ECDD2B3005E930E /* EventImageChangeDelegate.swift */,
+				53D340A31ECDB7DB0033D57D /* SendCompleteDelegate.swift */,
 				53B31E041EA5E79200A1E5B3 /* VaporModel.swift */,
 				5362CCED1E90BEA900D81666 /* UserModel.swift */,
 			);
@@ -242,10 +269,13 @@
 		53BEB1CF1EA0827200D7A3AD /* MainVC */ = {
 			isa = PBXGroup;
 			children = (
-				5362BD401E8FE74600D81666 /* EventViewController.swift */,
 				53BEB1DA1EA1003F00D7A3AD /* MainViewController.swift */,
+				53D340971ECD98270033D57D /* EventTableViewController.swift */,
+				53D340991ECD98410033D57D /* EventTableViewCell.swift */,
 				53B31E001EA5E16800A1E5B3 /* BoxTableViewController.swift */,
+				53D3409D1ECD9C650033D57D /* SendEventViewController.swift */,
 				53B31E021EA5E17A00A1E5B3 /* BoxTableViewCell.swift */,
+				53D3409B1ECD9C2B0033D57D /* SendEventNavigationViewController.swift */,
 				53D69A261EA7D01800A450A2 /* DetailVaporTableViewCell.swift */,
 				5362BD421E8FE75400D81666 /* SettingViewController.swift */,
 				53D69A2A1EA7D9CF00A450A2 /* DetailVaporViewController.swift */,
@@ -433,33 +463,43 @@
 			files = (
 				5362CCEC1E8FEE3F00D81666 /* FriendTableViewCell.swift in Sources */,
 				53594BDC1E9FAC4600CC705C /* Model.xcdatamodeld in Sources */,
+				53D340981ECD98270033D57D /* EventTableViewController.swift in Sources */,
 				53594BB41E9F875900CC705C /* Anonymous.swift in Sources */,
+				53D340A41ECDB7DB0033D57D /* SendCompleteDelegate.swift in Sources */,
 				531BDE471E96A7E2005D70D7 /* FriendTableViewController.swift in Sources */,
+				53EE6BDC1ECE05AD005E930E /* AnonymousUpdateDelegate.swift in Sources */,
 				5362CD021E92676B00D81666 /* RegisterViewController.swift in Sources */,
 				53B31E031EA5E17A00A1E5B3 /* BoxTableViewCell.swift in Sources */,
+				53D340A81ECDC2F90033D57D /* EventChangeDelegate.swift in Sources */,
 				53AEE4871EA4E2C900B8FB3D /* FriendChoiceViewController.swift in Sources */,
+				53EE6BDE1ECE05C3005E930E /* AnonymousModel.swift in Sources */,
 				53BEB1D31EA09F4A00D7A3AD /* Popup.swift in Sources */,
 				5362BCB41E8CEAE500D81666 /* AppDelegate.swift in Sources */,
 				5362BCC91E8CF19400D81666 /* IndexViewController.swift in Sources */,
 				53B31E011EA5E16800A1E5B3 /* BoxTableViewController.swift in Sources */,
+				53D3409A1ECD98410033D57D /* EventTableViewCell.swift in Sources */,
 				53D69A291EA7D02400A450A2 /* DetailVaporTableViewController.swift in Sources */,
 				53AEE48B1EA4E32600B8FB3D /* FriendChoiceTableViewCell.swift in Sources */,
 				53B31E051EA5E79200A1E5B3 /* VaporModel.swift in Sources */,
+				53D3409E1ECD9C650033D57D /* SendEventViewController.swift in Sources */,
 				5362BD431E8FE75400D81666 /* SettingViewController.swift in Sources */,
+				53D3409C1ECD9C2B0033D57D /* SendEventNavigationViewController.swift in Sources */,
 				53594BB21E9F52D200CC705C /* Vapor.swift in Sources */,
 				5362CD061E933B9300D81666 /* SendVaporViewController.swift in Sources */,
+				53EE6BDA1ECDD2B3005E930E /* EventImageChangeDelegate.swift in Sources */,
 				53B31E071EA6489600A1E5B3 /* VaporChangeDelegate.swift in Sources */,
 				531BDE331E93F9B7005D70D7 /* VideoViewController.swift in Sources */,
 				53BEB1DB1EA1003F00D7A3AD /* MainViewController.swift in Sources */,
 				53D69A2B1EA7D9CF00A450A2 /* DetailVaporViewController.swift in Sources */,
+				53D340A61ECDC2440033D57D /* EventModel.swift in Sources */,
 				531BDE431E968B9C005D70D7 /* AddFriendSearchTableViewCell.swift in Sources */,
 				53BEB1D51EA0C65600D7A3AD /* SearchFriendViewController.swift in Sources */,
 				531BDE311E93F98E005D70D7 /* SwiftyRecordButton.swift in Sources */,
+				53D340A21ECD9E8E0033D57D /* Event.swift in Sources */,
 				5362CCEE1E90BEA900D81666 /* UserModel.swift in Sources */,
 				53BEB1D71EA0D33D00D7A3AD /* SearchTableViewCell.swift in Sources */,
 				531BDE2F1E93F95D005D70D7 /* PhotoViewController.swift in Sources */,
 				53D69A271EA7D01800A450A2 /* DetailVaporTableViewCell.swift in Sources */,
-				5362BD411E8FE74600D81666 /* EventViewController.swift in Sources */,
 				531BDE451E96A388005D70D7 /* AddFriendTableViewController.swift in Sources */,
 				53AEE4891EA4E30500B8FB3D /* FriendChoiceTableViewController.swift in Sources */,
 				5362CD041E929EDE00D81666 /* AdditionalDataViewController.swift in Sources */,

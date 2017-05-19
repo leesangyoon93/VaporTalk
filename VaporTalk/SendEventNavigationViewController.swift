@@ -1,14 +1,14 @@
 //
-//  EventViewController.swift
+//  SendEventNavigationViewController.swift
 //  VaporTalk
 //
-//  Created by 이상윤 on 2017. 4. 1..
+//  Created by 이상윤 on 2017. 5. 18..
 //  Copyright © 2017년 이상윤. All rights reserved.
 //
 
 import UIKit
 
-class EventViewController: UIViewController {
+class SendEventNavigationViewController: UINavigationController {
 
     override func viewDidLoad() {
         super.viewDidLoad()

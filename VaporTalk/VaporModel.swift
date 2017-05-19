@@ -11,7 +11,32 @@ import Firebase
 class VaporModel: NSObject {
     var allVapors = [String:[Vapor]]()
     var detailVapors = [Vapor]()
-    var delegate: VaporChangeDelegate?
+    var vaporChangeDelegate: VaporChangeDelegate?
+    var sendCompleteDelegate: SendCompleteDelegate?
+    
+    func sendVapor(vapor: Vapor, vaporImage: UIImage) {
+        let ref = FIRDatabase.database().reference()
+        let storage = FIRStorage.storage().reference().child("vapor").child("\(vapor.target!)/\(UserDefaults.standard.object(forKey: "uid") as! String)/\(vapor.contents!)")
+        let metadata = FIRStorageMetadata()
+        metadata.contentType = "image/jpeg"
+        
+        if let uploadData = UIImageJPEGRepresentation(vaporImage, 0.5) {
+            storage.put(uploadData, metadata: metadata, completion: { (metadata, error) in
+                if error != nil {
+                    return
+                }
+                let lastVaporReference = ref.child("lastMessages").child(vapor.target!)
+                lastVaporReference.setValue(["from": vapor.from!])
+                
+                let vaporReference = ref.child("messages").child(vapor.target!).child(vapor.from!).childByAutoId()
+                let vaporValues = ["from": vapor.from!, "isActive": vapor.isActive!,
+                                   "contents": metadata?.name! ?? "", "timer": vapor.timer!, "timestamp": vapor.timestamp!] as [String : Any]
+                vaporReference.updateChildValues(vaporValues) { (error, ref) in
+                    self.sendCompleteDelegate?.didComplete()
+                }
+            })
+        }
+    }
     
     func fetchVapors() {
         let ref = FIRDatabase.database().reference()
@@ -20,15 +45,15 @@ class VaporModel: NSObject {
             if let dic = snapshot.value as? [String: AnyObject] {
                 for (from, value) in dic {
                     var vaporArr = [Vapor]()
-                    for (key, data) in (value as! NSDictionary) {
+                    for (_, data) in (value as! NSDictionary) {
                         let info = data as! [String: AnyObject]
-                        let vapor = Vapor(from , UserDefaults.standard.object(forKey: "uid") as! String, info["contents"] as! String, info["timer"] as! Double, info["isActive"] as! Bool, info["timestamp"] as! String, key as! String)
+                        let vapor = Vapor(from , UserDefaults.standard.object(forKey: "uid") as! String, info["contents"] as! String, info["timer"] as! Double, info["isActive"] as! Bool, info["timestamp"] as! String)
                         vaporArr.append(vapor)
                     }
                     self.allVapors.updateValue(vaporArr, forKey: from)
                 }
             }
-            self.delegate?.onDataChange!()
+            self.vaporChangeDelegate?.didChange!()
         })
     }
     
@@ -40,21 +65,20 @@ class VaporModel: NSObject {
             self.detailVapors = [Vapor]()
             
             if let dic = snapshot.value as? [String: AnyObject] {
-                for (key, value) in dic {
-                    let vapor = Vapor(uid, UserDefaults.standard.object(forKey: "uid") as! String, value["contents"] as! String, value["timer"] as! Double, value["isActive"] as! Bool, value["timestamp"] as! String, key)
+                for (_, value) in dic {
+                    let vapor = Vapor(uid, UserDefaults.standard.object(forKey: "uid") as! String, value["contents"] as! String, value["timer"] as! Double, value["isActive"] as! Bool, value["timestamp"] as! String)
                     self.detailVapors.append(vapor)
                 }
             }
-            self.delegate?.onVaporUpdated!()
+            self.vaporChangeDelegate?.didUpdated!()
         })
     }
     
     func removeUserVapor(from: String) {
-        // 스토리지 폴더삭제 안됨..?
         allVapors.removeValue(forKey: from)
         
         let storage = FIRStorage.storage().reference()
-        let storageRef = storage.child("contents/\(UserDefaults.standard.object(forKey: "uid") as! String)/\(from)")
+        let storageRef = storage.child("vapor/\(UserDefaults.standard.object(forKey: "uid") as! String)/\(from)")
         
         storageRef.delete { (error) in
             if error != nil {
@@ -67,7 +91,6 @@ class VaporModel: NSObject {
         
         
         //self.delegate?.onDataChange!()
-        // 베이퍼 한개 지울때 쓰자
         //vapors[vapor.getFrom()]?.remove(at: (vapors[vapor.getFrom()]?.index(of: vapor))!)
     }
     

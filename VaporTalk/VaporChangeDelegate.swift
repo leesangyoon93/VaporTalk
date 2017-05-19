@@ -8,6 +8,6 @@
 
 @objc
 protocol VaporChangeDelegate {
-    @objc optional func onDataChange()
-    @objc optional func onVaporUpdated()
+    @objc optional func didChange()
+    @objc optional func didUpdated()
 }

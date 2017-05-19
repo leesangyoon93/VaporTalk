@@ -13,11 +13,11 @@ import FirebaseStorageUI
 import NVActivityIndicatorView
 import PopupDialog
 
-class AddFriendTableViewController: UITableViewController, UISearchResultsUpdating {
+class AddFriendTableViewController: UITableViewController, AnonymousUpdateDelegate {
     
-    let model = UserModel()
+    let userModel = UserModel()
+    let anonymousModel = AnonymousModel()
     
-    var friends = [Friend]()
     var anonymousList = [Anonymous]()
     var friendLoadIndicator: NVActivityIndicatorView?
     var contacts = [Anonymous]()
@@ -27,7 +27,8 @@ class AddFriendTableViewController: UITableViewController, UISearchResultsUpdati
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
-        friends = model.getFriends()
+        
+        anonymousModel.anonymousUpdateDelegate = self
         findContacts()
     }
 
@@ -45,16 +46,6 @@ class AddFriendTableViewController: UITableViewController, UISearchResultsUpdati
         tableView.tableHeaderView = searchController.searchBar
     }
     
-    func updateSearchResults(for searchController: UISearchController) {
-        filterFriendForSearchText(searchText: searchController.searchBar.text!)
-    }
-    
-    func filterFriendForSearchText(searchText: String) {
-        self.filterContacts = contacts.filter({ (contact) -> Bool in
-            return contact.getName().contains(searchText) })
-        tableView.reloadData()
-    }
-    
     func searchFriendTouched() {
         self.performSegue(withIdentifier: "SearchFriendSegue", sender: nil)
     }
@@ -64,15 +55,15 @@ class AddFriendTableViewController: UITableViewController, UISearchResultsUpdati
     }
     
     func addFriendButtonTouched(sender: UIButton) {
-        let anonymous = self.contacts[sender.tag]
+        var anonymous = self.contacts[sender.tag]
         let title = "친구 추가 확인"
-        let message = "\(anonymous.getName()) 님을 친구로 등록하시겠습니까?"
+        let message = "\(anonymous.name!) 님을 친구로 등록하시겠습니까?"
         
         let popup = Popup.newPopup(title, message)
         let buttonOne = CancelButton(title: "CANCEL") { }
         
         let buttonTwo = DefaultButton(title: "OK") {
-            self.model.addFriend(anonymous)
+            self.userModel.addFriend(anonymous)
             anonymous.setIsFriend(true)
             self.tableView.reloadData()
         }
@@ -80,7 +71,6 @@ class AddFriendTableViewController: UITableViewController, UISearchResultsUpdati
         popup.addButtons([buttonOne, buttonTwo])
         self.present(popup, animated: true, completion: nil)
     }
-    
     
     func findContacts() {
         friendLoadIndicator?.startAnimating()
@@ -107,56 +97,33 @@ class AddFriendTableViewController: UITableViewController, UISearchResultsUpdati
                 print("Fetch contact error: \(error)")
             }
             
-            self.fetchAnonymous(cnContacts)
+            self.anonymousModel.fetchAnonymous(cnContacts)
         })
     }
     
-    func fetchAnonymous(_ cnContacts: [CNContact]) {
-        let ref = FIRDatabase.database().reference()
-        ref.child("users").observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
-            if let dic = snapshot.value as? [String: AnyObject] {
-                for (key, value) in dic {
-                    let anonymous = Anonymous(UID: key, name: value["name"] as! String, email: value["email"] as! String,
-                        profileImage: value["profileImage"] as! String, tel: value["tel"] as! String, isFriend: false)
-                    
-                    for friend in self.friends {
-                        if anonymous.getUID() == friend.uid {
-                            anonymous.setIsFriend(true)
-                        }
-                    }
-                    
-                    for contact in cnContacts {
-                        if contact.phoneNumbers.count != 0 {
-                            let tel = (contact.phoneNumbers[0].value).value(forKey: "digits") as? String
-                            if value["tel"] as? String == tel! {
-                                self.contacts.append(anonymous)
-                            }
-                        }
-                    }
-                    self.anonymousList.append(anonymous)
-                }
-                self.sortContacts()
-            }
-            self.tableView.reloadData()
-            self.friendLoadIndicator?.stopAnimating()
-        })
+    func didUpdate() {
+        anonymousList = anonymousModel.getAnonymousList()
+        contacts = anonymousModel.getContacts()
+        self.sortContacts()
+        self.tableView.reloadData()
+        self.friendLoadIndicator?.stopAnimating()
     }
     
     func sortContacts() {
         self.contacts.sort { (object1, object2) -> Bool in
-            if object1.getName() == object2.getName() {
-                return object1.getTel() < object2.getTel()
+            if object1.name! == object2.name! {
+                return object1.tel! < object2.tel!
             }
             else {
-                return object1.getName() < object2.getName()
+                return object1.name! < object2.name!
             }
         }
         self.anonymousList.sort { (object1, object2) -> Bool in
-            if object1.getName() == object2.getName() {
-                return object1.getTel() < object2.getTel()
+            if object1.name! == object2.name! {
+                return object1.tel! < object2.tel!
             }
             else {
-                return object1.getName() < object2.getName()
+                return object1.name! < object2.name!
             }
         }
     }
@@ -198,11 +165,11 @@ extension AddFriendTableViewController {
             contact = contacts[indexPath.row]
         }
         
-        cell.friendProfileNameLabel.text = contact.getName()
+        cell.friendProfileNameLabel.text = contact.name!
         let profileImageReference = storage.reference(withPath: "default-user.png")
         cell.friendProfileImageView.sd_setImage(with: profileImageReference, placeholderImage: #imageLiteral(resourceName: "circle-user-7.png"))
         
-        if contact.getIsFriend() {
+        if contact.isFriend! {
             cell.addFriendButton.setTitle("베프", for: UIControlState())
             cell.addFriendButton.removeTarget(self, action: #selector(addFriendButtonTouched), for: .touchUpInside)
         }
@@ -215,5 +182,17 @@ extension AddFriendTableViewController {
         cell.addFriendButton.tag = indexPath.row
         
         return cell
+    }
+}
+
+extension AddFriendTableViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        filterFriendForSearchText(searchText: searchController.searchBar.text!)
+    }
+    
+    func filterFriendForSearchText(searchText: String) {
+        self.filterContacts = contacts.filter({ (contact) -> Bool in
+            return (contact.name!).contains(searchText) })
+        tableView.reloadData()
     }
 }

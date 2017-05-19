@@ -13,6 +13,8 @@ import SwiftyCam
 
 class SendVaporViewController: SwiftyCamViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, SwiftyCamViewControllerDelegate {
     
+    var eventImageChangeDelegate: EventImageChangeDelegate?
+    var sendType: String?
     var targetData: [String: String]?
     var flipCameraButton: UIButton!
     var flashButton: UIButton!
@@ -39,11 +41,18 @@ class SendVaporViewController: SwiftyCamViewController, UIImagePickerControllerD
     
     // 사진 찍고나서
     func swiftyCam(_ swiftyCam: SwiftyCamViewController, didTake photo: UIImage) {
-        let newVC = PhotoViewController(image: photo)
-        if targetData != nil {
-            newVC.targetData = targetData!
+        if sendType == "vapor" {
+            let newVC = PhotoViewController(image: photo)
+            if targetData != nil {
+                newVC.targetData = targetData!
+            }
+            self.present(newVC, animated: true, completion: nil)
         }
-        self.present(newVC, animated: true, completion: nil)
+        else if sendType == "event" {
+            self.eventImageChangeDelegate?.didChange(selectImage: photo)
+            self.dismiss(animated: true, completion: nil)
+            
+        }
     }
     
     // 동영상 찍고나서

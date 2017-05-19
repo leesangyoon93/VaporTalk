@@ -39,7 +39,6 @@ class IndexViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
         generalLoginButton.layer.masksToBounds = true
     }
 
-    // Facebook Logout
     func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
     }
     
@@ -52,7 +51,6 @@ class IndexViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
         })
     }
     
-    // Facebook Login
     func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
         if error != nil {
             showAlertDialog(title: "Login Alert", message: "이메일 또는 비밀번호가 틀렸습니다")
@@ -72,7 +70,6 @@ class IndexViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
         })
     }
     
-    // Google Login
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
         if (error) != nil {
             showAlertDialog(title: "Login Alert", message: "이메일 또는 비밀번호가 틀렸습니다")

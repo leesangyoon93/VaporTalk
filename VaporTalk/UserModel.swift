@@ -18,16 +18,16 @@ final class UserModel: NSObject {
         let context = delegate.persistentContainer.viewContext
 
         let friend = Friend(context: context)
-        friend.uid = anonymous.getUID()
-        friend.name = anonymous.getName()
-        friend.email = anonymous.getEmail()
-        friend.profileImage = anonymous.getProfileImage()
-        friend.tel = anonymous.getTel()
+        friend.uid = anonymous.UID!
+        friend.name = anonymous.name!
+        friend.email = anonymous.email!
+        friend.profileImage = anonymous.profileImage!
+        friend.tel = anonymous.tel!
         delegate.saveContext()
         
         let ref = FIRDatabase.database().reference()
-        let friendReference = ref.child("friends").child(UserDefaults.standard.object(forKey: "uid") as! String).child(anonymous.getUID())
-        let values = ["name": anonymous.getName(), "profileImage": anonymous.getProfileImage(), "email": anonymous.getEmail(), "tel": anonymous.getTel()]
+        let friendReference = ref.child("friends").child(UserDefaults.standard.object(forKey: "uid") as! String).child(anonymous.UID!)
+        let values = ["name": anonymous.name!, "profileImage": anonymous.profileImage!, "email": anonymous.email!, "tel": anonymous.tel!]
         friendReference.updateChildValues(values)
     }
     

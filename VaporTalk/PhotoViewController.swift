@@ -10,14 +10,17 @@ import UIKit
 import Firebase
 import NVActivityIndicatorView
 
-class PhotoViewController: UIViewController {
+class PhotoViewController: UIViewController, SendCompleteDelegate {
     
-    private var selectImage: UIImage?
-    private var vaporTimePickerIsHidden = false
+    let model = VaporModel()
+    
+    var selectImage: UIImage?
     var sendVaporIndicator: NVActivityIndicatorView?
     
     let vaporTimePickerView: UIDatePicker = UIDatePicker()
     let pickerBackgroundView: UIView = UIView()
+    
+    var vaporTimePickerIsHidden = false
     var targetData: [String:String]?
     
     override var prefersStatusBarHidden: Bool {
@@ -36,10 +39,6 @@ class PhotoViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func timeValueChanged() {
-        print(vaporTimePickerView.countDownDuration)
-    }
-    
     func timePickerSwitchTouched() {
         self.vaporTimePickerView.isHidden = !vaporTimePickerIsHidden
         self.pickerBackgroundView.isHidden = !vaporTimePickerIsHidden
@@ -48,6 +47,8 @@ class PhotoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        model.sendCompleteDelegate = self
         
         let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 37.5, width: 75, height: 75)
         sendVaporIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballSpinFadeLoader, color: UIColor.blue, padding: 20)
@@ -63,7 +64,7 @@ class PhotoViewController: UIViewController {
         
         let okButton = UIButton(frame: CGRect(x: self.view.frame.width - 40, y: 10, width: 30, height: 30))
         okButton.setImage(#imageLiteral(resourceName: "send-button"), for: UIControlState())
-        okButton.addTarget(self, action: #selector(ok), for: .touchUpInside)
+        okButton.addTarget(self, action: #selector(sendButtonTouched), for: .touchUpInside)
         
         pickerBackgroundView.frame = CGRect(x: 10, y: self.view.frame.height - 200, width: self.view.frame.width / 1.5, height: 150)
         pickerBackgroundView.backgroundColor = UIColor.white
@@ -75,7 +76,6 @@ class PhotoViewController: UIViewController {
         vaporTimePickerView.alpha = 0.8
         vaporTimePickerView.datePickerMode = UIDatePickerMode.countDownTimer
         vaporTimePickerView.countDownDuration = 300.0
-        vaporTimePickerView.addTarget(self, action: #selector(timeValueChanged), for: UIControlEvents.valueChanged)
         
         let vaporTimePickerSwitchButton = UIButton(frame: CGRect(x: 10, y: self.view.frame.height - 40, width: 30, height: 30))
         vaporTimePickerSwitchButton.setImage(#imageLiteral(resourceName: "alarm-clock"), for: UIControlState())
@@ -94,39 +94,38 @@ class PhotoViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    func ok() {
+    func sendButtonTouched() {
         if targetData != nil {
-            sendVaporIndicator?.startAnimating()
-            let key = Int(Date.timeIntervalSinceReferenceDate * 1000)
-            let storage = FIRStorage.storage().reference().child("contents").child("\((targetData?["uid"])!)/\(UserDefaults.standard.object(forKey: "uid") as! String)/\(key)")
-            let metadata = FIRStorageMetadata()
-            metadata.contentType = "image/jpeg"
-            
-            if let uploadData = UIImageJPEGRepresentation(selectImage!, 0.5) {
-                storage.put(uploadData, metadata: metadata, completion: { (metadata, error) in
-                    if error != nil {
-                        return
-                    }
-
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
-                    
-                    let vapor = Vapor(UserDefaults.standard.object(forKey: "uid") as! String, (self.targetData?["uid"])!, (metadata?.name)!, self.vaporTimePickerView.countDownDuration, true, dateFormatter.string(from: Date()), "\(key)")
-                    
-                    if vapor.sendVapor() {
-                        self.sendVaporIndicator?.stopAnimating()
-                        self.showAlertDialog(title: "베이퍼 전송 완료", message: "\((self.targetData?["name"])!) 님에게 베이퍼 전송이 완료되었습니다.")
-                    }
-                })
-            }
+            sendVaporToFriend()
         }
         else {
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let friendChoiceViewController = storyboard.instantiateViewController(withIdentifier: "FriendChoiceViewController") as! FriendChoiceViewController
-            (friendChoiceViewController.viewControllers.first as! FriendChoiceTableViewController).selectImage = self.selectImage!
-            (friendChoiceViewController.viewControllers.first as! FriendChoiceTableViewController).timer = self.vaporTimePickerView.countDownDuration
-            self.present(friendChoiceViewController, animated: true, completion: nil)
+            moveFriendChoiceVC()
         }
+    }
+    
+    func sendVaporToFriend() {
+        sendVaporIndicator?.startAnimating()
+        
+        let imageName = Int(Date.timeIntervalSinceReferenceDate * 1000)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
+        
+        let vapor = Vapor(UserDefaults.standard.object(forKey: "uid") as! String, (self.targetData?["uid"])!, "\(imageName)", self.vaporTimePickerView.countDownDuration, true, dateFormatter.string(from: Date()))
+        
+        model.sendVapor(vapor: vapor, vaporImage: selectImage!)
+    }
+    
+    func moveFriendChoiceVC() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let friendChoiceViewController = storyboard.instantiateViewController(withIdentifier: "FriendChoiceViewController") as! FriendChoiceViewController
+        (friendChoiceViewController.viewControllers.first as! FriendChoiceTableViewController).selectImage = self.selectImage!
+        (friendChoiceViewController.viewControllers.first as! FriendChoiceTableViewController).timer = self.vaporTimePickerView.countDownDuration
+        self.present(friendChoiceViewController, animated: true, completion: nil)
+    }
+    
+    func didComplete() {
+        self.sendVaporIndicator?.stopAnimating()
+        self.showAlertDialog(title: "베이퍼 전송 완료", message: "\((self.targetData?["name"])!) 님에게 베이퍼 전송이 완료되었습니다.")
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

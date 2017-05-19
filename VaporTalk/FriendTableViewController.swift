@@ -13,10 +13,12 @@ import GoogleSignIn
 import KCFloatingActionButton
 import NVActivityIndicatorView
 import PopupDialog
+import CoreLocation
 
-class FriendTableViewController: UITableViewController, UITextFieldDelegate, NVActivityIndicatorViewable, UISearchResultsUpdating {
+class FriendTableViewController: UITableViewController, UITextFieldDelegate, NVActivityIndicatorViewable, CLLocationManagerDelegate {
 
     let model = UserModel()
+    let manager = CLLocationManager()
     
     let sections = ["내 프로필", "친구"]
     var friends = [Friend]()
@@ -48,27 +50,38 @@ class FriendTableViewController: UITableViewController, UITextFieldDelegate, NVA
         searchController.dimsBackgroundDuringPresentation = false
         definesPresentationContext = true
         tableView.tableHeaderView = searchController.searchBar
+        
+        manager.delegate = self
+        manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+
+        if UserDefaults.standard.object(forKey: "isNearAgree") as! String == "true" {
+            manager.requestWhenInUseAuthorization()
+        }
+        
+        if CLLocationManager.locationServicesEnabled() {
+            manager.startUpdatingLocation()
+        }
     }
     
-    // 검색창 텍스트 변경 시 호출.
-    func updateSearchResults(for searchController: UISearchController) {
-        filterFriendForSearchText(searchText: searchController.searchBar.text!)
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let location = locations[0]
+        
+        updateUserLocation(Double(location.coordinate.latitude), Double(location.coordinate.longitude))
     }
     
-    // 친구 검색어에 따라 뷰 리로드
-    func filterFriendForSearchText(searchText: String) {
-        self.filterFriends = friends.filter({ (friend) -> Bool in
-            return (friend.name?.contains(searchText))!
-        })
-        tableView.reloadData()
+    func updateUserLocation(_ lat: Double, _ lon: Double) {
+        let ref = FIRDatabase.database().reference()
+        let userLocationRef = ref.child("locations").child(UserDefaults.standard.object(forKey: "uid") as! String)
+        let locationValues = ["latitude": lat, "longtitude": lon]
+        userLocationRef.updateChildValues(locationValues) { (error, ref) in
+            self.manager.stopUpdatingLocation()
+        }
     }
     
-    // 베이퍼 전송 버튼
     func sendVaporTouched() {
         self.performSegue(withIdentifier: "SendVaporSegue", sender: nil)
     }
     
-    // 친구 추가 버튼
     func addFriendTouched() {
         self.performSegue(withIdentifier: "AddFriendSegue", sender: nil)
     }
@@ -102,6 +115,7 @@ class FriendTableViewController: UITableViewController, UITextFieldDelegate, NVA
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "SendVaporSegue" {
             let sendVaporVC = segue.destination as! SendVaporViewController
+            sendVaporVC.sendType = "vapor"
             if sender != nil {
                 sendVaporVC.targetData = sender as? Dictionary
             }
@@ -200,7 +214,6 @@ extension FriendTableViewController {
             profileData = ["uid": friend.uid!, "name": friend.name!, "email": friend.email!, "profileImage": friend.profileImage!]
         }
         
-        // 위에있는 패스 사용해서 유저마다 프로필 사진 불러다 주기
         let islandRef = storage.reference(withPath: "default-user.png")
         
         islandRef.data(withMaxSize: 1 * 128 * 128) { (data, error) -> Void in
@@ -225,4 +238,17 @@ extension FriendTableViewController {
         self.tableView.deselectRow(at: indexPath, animated: true)
     }
 
+}
+
+extension FriendTableViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        filterFriendForSearchText(searchText: searchController.searchBar.text!)
+    }
+    
+    func filterFriendForSearchText(searchText: String) {
+        self.filterFriends = friends.filter({ (friend) -> Bool in
+            return (friend.name?.contains(searchText))!
+        })
+        tableView.reloadData()
+    }
 }

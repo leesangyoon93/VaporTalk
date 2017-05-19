@@ -69,11 +69,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FIRMessagingDelegate {
                     
                     if let dic = snapshot.value as? [String: AnyObject] {
                         let user = UserDefaults.standard
-                        user.set(snapshot.key, forKey: "uid")
-                        user.set(dic["name"], forKey: "name")
-                        user.set(dic["email"], forKey: "email")
-                        user.set(dic["profileImage"], forKey: "profileImage")
-                        user.set(dic["tel"], forKey: "tel")
+                        user.set(snapshot.key , forKey: "uid")
+                        user.set(dic["name"] as! String, forKey: "name")
+                        user.set(dic["email"] as! String, forKey: "email")
+                        user.set(dic["profileImage"] as! String, forKey: "profileImage")
+                        user.set(dic["tel"] as! String, forKey: "tel")
+                        user.set(dic["isNearAgree"] as! String, forKey: "isNearAgree")
+                        user.set(dic["isCommerceAgree"] as! String, forKey: "isCommerceAgree")
                     }
                 }, withCancel: { (error) in
                     print(error)
