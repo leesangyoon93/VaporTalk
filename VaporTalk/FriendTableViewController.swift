@@ -58,7 +58,7 @@ class FriendTableViewController: UITableViewController, UITextFieldDelegate, NVA
             manager.requestWhenInUseAuthorization()
         }
         
-        if CLLocationManager.locationServicesEnabled() {
+        if CLLocationManager.locationServicesEnabled() && UserDefaults.standard.object(forKey: "isNearAgree") as! String == "true" {
             manager.startUpdatingLocation()
         }
     }
@@ -214,27 +214,38 @@ extension FriendTableViewController {
             profileData = ["uid": friend.uid!, "name": friend.name!, "email": friend.email!, "profileImage": friend.profileImage!]
         }
         
-        let islandRef = storage.reference(withPath: "default-user.png")
+        let popup = Popup.newImagePopup(profileData["name"]!, profileData["email"]!, #imageLiteral(resourceName: "default-user"))
         
-        islandRef.data(withMaxSize: 1 * 128 * 128) { (data, error) -> Void in
-            if error != nil {
-                print(error ?? "")
-                return
-            } else {
-                let image = UIImage(data: data!)
-                let popup = Popup.newImagePopup(profileData["name"]!, profileData["email"]!, image!)
-                
-                let buttonOne = DefaultButton(title: "Send Vapor") {
-                    self.performSegue(withIdentifier: "SendVaporSegue", sender: profileData)
-                }
-                
-                let buttonTwo = CancelButton(title: "CANCEL") { }
-                
-                popup.addButtons([buttonOne, buttonTwo])
-                
-                self.present(popup, animated: true, completion: nil)
-            }
+        let buttonOne = DefaultButton(title: "Send Vapor") {
+            self.performSegue(withIdentifier: "SendVaporSegue", sender: profileData)
         }
+        
+        let buttonTwo = CancelButton(title: "CANCEL") { }
+        
+        popup.addButtons([buttonOne, buttonTwo])
+        
+        self.present(popup, animated: true, completion: nil)
+//        let islandRef = storage.reference(withPath: "default-user.png")
+//
+//        islandRef.data(withMaxSize: 1 * 128 * 128) { (data, error) -> Void in
+//            if error != nil {
+//                print(error ?? "")
+//                return
+//            } else {
+//                let image = UIImage(data: data!)
+//                let popup = Popup.newImagePopup(profileData["name"]!, profileData["email"]!, image!)
+//                
+//                let buttonOne = DefaultButton(title: "Send Vapor") {
+//                    self.performSegue(withIdentifier: "SendVaporSegue", sender: profileData)
+//                }
+//                
+//                let buttonTwo = CancelButton(title: "CANCEL") { }
+//                
+//                popup.addButtons([buttonOne, buttonTwo])
+//                
+//                self.present(popup, animated: true, completion: nil)
+//            }
+//        }
         self.tableView.deselectRow(at: indexPath, animated: true)
     }
 

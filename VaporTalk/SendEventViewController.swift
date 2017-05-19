@@ -37,6 +37,10 @@ class SendEventViewController: UIViewController, UITextFieldDelegate, EventImage
         eventModel.sendCompleteDelegate = self
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        manager.stopUpdatingLocation()
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
@@ -89,20 +93,50 @@ class SendEventViewController: UIViewController, UITextFieldDelegate, EventImage
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
         
-        let event = Event(hostUID: UserDefaults.standard.object(forKey: "uid") as! String, hostName: UserDefaults.standard.object(forKey: "name") as! String, title: titleTextField.text!, content: contentTextView.text, imageUrl: "\(imageName)", timer: eventTimePickerView.countDownDuration, latitude: lat!, longtitude: lon!, location: address!, timestamp: dateFormatter.string(from: Date()))
-        
-        eventModel.sendEvent(event: event, eventImage: eventImgView.image)
+        if checkEventVaild() {
+            let event = Event(hostUID: UserDefaults.standard.object(forKey: "uid") as! String, hostName: UserDefaults.standard.object(forKey: "name") as! String, title: titleTextField.text!, content: contentTextView.text, imageUrl: "\(imageName)", timer: eventTimePickerView.countDownDuration, latitude: lat!, longtitude: lon!, location: address!, timestamp: dateFormatter.string(from: Date()))
+            
+            eventModel.sendEvent(event: event, eventImage: eventImgView.image)
+        }
+        else {
+            sendEventIndicator?.stopAnimating()
+            showInputAlertDialog(title: "내용 입력", message: "이벤트 제목과 내용을 모두 입력해주세요.")
+        }
+    }
+    
+    func checkEventVaild() -> Bool {
+        if titleTextField.text != "" && contentTextView.text != "" {
+            return true
+        }
+        else {
+            return false
+        }
     }
     
     func didComplete() {
         sendEventIndicator?.stopAnimating()
-        self.showAlertDialog(title: "이벤트 전송 완료", message: "주변 사용자들에게 베이퍼 이벤트 전송이 완료되었습니다.")
+        self.showCompleteEventDialog(title: "이벤트 전송 완료", message: "주변 사용자들에게 베이퍼 이벤트 전송이 완료되었습니다.")
     }
     
-    func showAlertDialog(title: String, message: String) {
+    func showCompleteEventDialog(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let defaultAction = UIAlertAction(title: "확인", style: .default) { (action) in
             self.dismiss(animated: true, completion: nil)
+        }
+        alertController.addAction(defaultAction)
+        
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func showInputAlertDialog(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let defaultAction = UIAlertAction(title: "확인", style: .default) { (action) in
+            if self.titleTextField.text == "" {
+                self.titleTextField.resignFirstResponder()
+            }
+            else {
+                self.contentTextView.resignFirstResponder()
+            }
         }
         alertController.addAction(defaultAction)
         

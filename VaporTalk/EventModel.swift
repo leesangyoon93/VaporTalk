@@ -20,7 +20,9 @@ class EventModel: NSObject {
         let metadata = FIRStorageMetadata()
         metadata.contentType = "image/jpeg"
         
-        if let uploadData = UIImageJPEGRepresentation(eventImage!, 0.5) {
+        let uploadImage = eventImage ?? #imageLiteral(resourceName: "NoImageAvailable")
+        
+        if let uploadData = UIImageJPEGRepresentation(uploadImage, 0.5) {
             storage.put(uploadData, metadata: metadata, completion: { (metadata, error) in
                 if error != nil {
                     return
@@ -38,14 +40,24 @@ class EventModel: NSObject {
     func fetchEvents() {
         let ref = FIRDatabase.database().reference()
         let eventRef = ref.child("events").child(UserDefaults.standard.object(forKey: "uid") as! String)
-        eventRef.observe(.value, with: { (snapshot) in
+        
+        eventRef.observe(.value, with: { (eventSnapshot) in
             self.events.removeAll()
-            if let dic = snapshot.value as? [String: AnyObject] {
-                for (_, value) in dic {
-                    let event = Event(hostUID: value["hostUID"] as! String, hostName: value["hostName"] as! String, title: value["title"] as! String, content: value["content"] as! String, imageUrl: value["imageUrl"] as! String, timer: value["timer"] as! Double, latitude: value["latitude"] as! Double, longtitude: value["longtitude"] as! Double, location: value["location"] as! String, timestamp: value["timestamp"] as! String)
-                    self.events.append(event)
+            
+            if let dic = eventSnapshot.value as? [String: AnyObject] {
+                for (_, key) in dic {
+                    let eventDataRef = ref.child("eventData").child(key as! String)
+                    eventDataRef.observeSingleEvent(of: .value, with: { (eventDataSnapshot) in
+                        if let value = eventDataSnapshot.value as? [String: AnyObject] {
+                            let event = Event(hostUID: value["hostUID"] as! String, hostName: value["hostName"] as! String, title: value["title"] as! String, content: value["content"] as! String, imageUrl: value["imageUrl"] as! String, timer: value["timer"] as! Double, latitude: value["latitude"] as! Double, longtitude: value["longtitude"] as! Double, location: value["location"] as! String, timestamp: value["timestamp"] as! String)
+                            self.events.append(event)
+                        }
+                        self.eventChangeDelegate?.didChange(self.events)
+                    })
                 }
-                self.eventChangeDelegate?.didChange()
+            }
+            else {
+                self.eventChangeDelegate?.didChange(self.events)
             }
         })
     }

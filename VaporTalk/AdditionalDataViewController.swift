@@ -69,7 +69,7 @@ class AdditionalDataViewController: UIViewController, UITextViewDelegate {
         
         let values = [
             "name": name, "email": user?.email! as Any,
-            "profileImage": user?.photoURL?.absoluteString ?? "https://firebasestorage.googleapis.com/v0/b/vaportalk-6725e.appspot.com/o/user.png?alt=media&token=e3dc1040-654e-4f73-9003-8313ddc42e1a",
+            "profileImage": user?.photoURL?.absoluteString ?? "https://firebasestorage.googleapis.com/v0/b/vaportalk-6725e.appspot.com/o/default-user.png?alt=media&token=e3dc1040-654e-4f73-9003-8313ddc42e1a",
             "tel": tel,
             "sex": self.sex,
             "isNearAgree": self.isNearAgree,

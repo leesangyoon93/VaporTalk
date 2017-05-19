@@ -60,26 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FIRMessagingDelegate {
         FIRAuth.auth()?.addStateDidChangeListener { auth, user in
             if user != nil {
                 print("Automatic Sign In: \(user?.email ?? "")")
-                
-                let ref = FIRDatabase.database().reference()
-                ref.child("users").child((user?.uid)!).observeSingleEvent(of: .value, with: { (snapshot) in
-                    
-                    self.updateUserFriend((user?.uid)!)
-                    self.updateUserFCM((user?.uid)!)
-                    
-                    if let dic = snapshot.value as? [String: AnyObject] {
-                        let user = UserDefaults.standard
-                        user.set(snapshot.key , forKey: "uid")
-                        user.set(dic["name"] as! String, forKey: "name")
-                        user.set(dic["email"] as! String, forKey: "email")
-                        user.set(dic["profileImage"] as! String, forKey: "profileImage")
-                        user.set(dic["tel"] as! String, forKey: "tel")
-                        user.set(dic["isNearAgree"] as! String, forKey: "isNearAgree")
-                        user.set(dic["isCommerceAgree"] as! String, forKey: "isCommerceAgree")
-                    }
-                }, withCancel: { (error) in
-                    print(error)
-                })
+                self.setUserData((user?.uid)!)
             } else {
                 let storyboard = UIStoryboard(name: "Main", bundle: nil)
                 let initialViewController = storyboard.instantiateViewController(withIdentifier: "IndexViewController")
@@ -89,70 +70,77 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FIRMessagingDelegate {
         return true
     }
     
-    func updateUserFCM(_ uid: String) {
+    func setUserData(_ uid: String) {
         let ref = FIRDatabase.database().reference()
         let userRef = ref.child("users").child(uid)
-        let values = ["fcm": FIRInstanceID.instanceID().token()]
-        userRef.updateChildValues(values)
+        userRef.updateChildValues(["fcm": FIRInstanceID.instanceID().token() ?? ""])
+        userRef.observeSingleEvent(of: .value, with: { (snapshot) in
+            if let dic = snapshot.value as? [String: AnyObject] {
+                let user = UserDefaults.standard
+                user.set(snapshot.key , forKey: "uid")
+                user.set(dic["name"] as! String, forKey: "name")
+                user.set(dic["email"] as! String, forKey: "email")
+                user.set(dic["profileImage"] as! String, forKey: "profileImage")
+                user.set(dic["tel"] as! String, forKey: "tel")
+                user.set(dic["isNearAgree"] as! String, forKey: "isNearAgree")
+                user.set(dic["isCommerceAgree"] as! String, forKey: "isCommerceAgree")
+                
+                self.checkUpdateFriend(uid)
+            }
+        }, withCancel: { (error) in
+            print(error)
+        })
     }
     
-    func updateUserFriend(_ uid: String) {
-        let ref = FIRDatabase.database().reference()
+    func checkUpdateFriend(_ uid: String) {
+        if (UserDefaults.standard.object(forKey: "lastUid") as? String) == nil {
+            UserDefaults.standard.setValue(uid, forKey: "lastUid")
+        }
         
+        if (UserDefaults.standard.object(forKey: "lastUid") as! String) == uid {
+            self.moveMainVC(uid)
+        }
+        else {
+            updateFriends(uid)
+        }
+    }
+    
+    func updateFriends(_ uid: String) {
+        let ref = FIRDatabase.database().reference()
         let delegate = (UIApplication.shared.delegate as! AppDelegate)
         let context = delegate.persistentContainer.viewContext
-        var configures = [Configure]()
-
+        
+        var friends = [Friend]()
         do {
-            configures = try context.fetch(Configure.fetchRequest())
+            friends = try context.fetch(Friend.fetchRequest())
+            for friend in friends {
+                context.delete(friend)
+            }
+            delegate.saveContext()
         } catch {
             print("error")
         }
         
-        if configures.count == 0 {
-            let configure = Configure(context: context)
-            configure.lastUID = uid
-            delegate.saveContext()
-        }
-        
-        if configures[0].lastUID != uid {
-            var friends = [Friend]()
-            do {
-                friends = try context.fetch(Friend.fetchRequest())
-                for friend in friends {
-                    context.delete(friend)
+        ref.child("friends").child(uid).observeSingleEvent(of: .value, with: { (friendSnapshot) in
+            if let dic = friendSnapshot.value as? [String: AnyObject] {
+                for (key, value) in dic {
+                    let friend = Friend(context: context)
+                    friend.uid = key
+                    friend.name = (value["name"] as! String)
+                    friend.email = (value["email"] as! String)
+                    friend.profileImage = (value["profileImage"] as! String)
+                    friend.tel = (value["tel"] as! String)
+                    delegate.saveContext()
                 }
-                delegate.saveContext()
-            } catch {
-                print("error")
             }
-            ref.child("friends").child(uid).observeSingleEvent(of: .value, with: { (friendSnapshot) in
-                if let dic = friendSnapshot.value as? [String: AnyObject] {
-                    for (key, value) in dic {
-                        let friend = Friend(context: context)
-                        friend.uid = key
-                        friend.name = (value["name"] as! String)
-                        friend.email = (value["email"] as! String)
-                        friend.profileImage = (value["profileImage"] as! String)
-                        friend.tel = (value["tel"] as! String)
-                        delegate.saveContext()
-                    }
-                }
-                self.moveMainVC(uid, configures[0])
-            }, withCancel: { (error) in
-                print("no friend?")
-                self.moveMainVC(uid, configures[0])
-            })
-        }
-        else {
-            self.moveMainVC(uid, configures[0])
-        }
+            self.moveMainVC(uid)
+        }, withCancel: { (error) in
+            self.moveMainVC(uid)
+        })
     }
     
-    func moveMainVC(_ uid: String, _ configure: Configure) {
-        let delegate = (UIApplication.shared.delegate as! AppDelegate)
-        configure.lastUID = uid
-        delegate.saveContext()
+    func moveMainVC(_ uid: String) {
+        UserDefaults.standard.setValue(uid, forKey: "lastUid")
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let initialViewController = storyboard.instantiateViewController(withIdentifier: "MainViewController")

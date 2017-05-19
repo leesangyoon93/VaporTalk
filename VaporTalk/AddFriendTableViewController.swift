@@ -167,7 +167,7 @@ extension AddFriendTableViewController {
         
         cell.friendProfileNameLabel.text = contact.name!
         let profileImageReference = storage.reference(withPath: "default-user.png")
-        cell.friendProfileImageView.sd_setImage(with: profileImageReference, placeholderImage: #imageLiteral(resourceName: "circle-user-7.png"))
+        cell.friendProfileImageView.sd_setImage(with: profileImageReference, placeholderImage: #imageLiteral(resourceName: "default-user"))
         
         if contact.isFriend! {
             cell.addFriendButton.setTitle("베프", for: UIControlState())

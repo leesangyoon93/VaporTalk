@@ -9,5 +9,5 @@
 import Foundation
 
 protocol EventChangeDelegate {
-    func didChange()
+    func didChange(_ events: [Event])
 }

@@ -6,8 +6,6 @@
 //  Copyright © 2017년 이상윤. All rights reserved.
 //
 
-@objc
-protocol VaporChangeDelegate {
-    @objc optional func didChange()
-    @objc optional func didUpdated()
+protocol VaporListChangeDelegate {
+    func didChange(_ vapors: [String:[Vapor]])
 }

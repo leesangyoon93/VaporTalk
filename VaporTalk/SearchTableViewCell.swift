@@ -17,7 +17,8 @@ class SearchTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        searchFriendProfileImage.layer.cornerRadius = self.searchFriendProfileImage.frame.width / 2.0
+        searchFriendProfileImage.layer.masksToBounds = true
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

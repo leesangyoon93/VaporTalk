@@ -18,7 +18,8 @@ class DetailVaporTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        contentImgView.layer.cornerRadius = 2.0
+        contentImgView.layer.masksToBounds = true
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

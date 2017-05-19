@@ -52,6 +52,12 @@ final class UserModel: NSObject {
             print("error")
         }
         
+        sortFriends()
+
+        return self.friends
+    }
+    
+    private func sortFriends() {
         friends.sort { (object1, object2) -> Bool in
             if object1.name! == object2.name! {
                 return object1.tel! < object2.tel!
@@ -60,7 +66,5 @@ final class UserModel: NSObject {
                 return object1.name! < object2.name!
             }
         }
-
-        return self.friends
     }
 }

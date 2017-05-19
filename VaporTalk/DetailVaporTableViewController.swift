@@ -10,7 +10,7 @@ import UIKit
 import Firebase
 import FirebaseStorageUI
 
-class DetailVaporTableViewController: UITableViewController, VaporChangeDelegate {
+class DetailVaporTableViewController: UITableViewController, DetailVaporChangeDelegate {
 
     let model = VaporModel()
     var contentImgView: UIImageView?
@@ -20,15 +20,15 @@ class DetailVaporTableViewController: UITableViewController, VaporChangeDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        model.vaporChangeDelegate = self
+        model.detailVaporChangeDelegate = self
         
         model.fetchDetailVapors(uid!)
         sortVapor()
         setUI()
     }
     
-    func didUpdated() {
-        self.vapors = model.getDetailVapors(uid!)
+    func didChange(_ vapors: [Vapor]) {
+        self.vapors = vapors
         sortVapor()
     }
     

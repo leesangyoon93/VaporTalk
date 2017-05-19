@@ -24,10 +24,18 @@ class SettingViewController: UIViewController {
         var isNearAgree = "true"
         if !nearUserSwitch.isOn {
             isNearAgree = "false"
+            updateUserLocation()
         }
         user.set(isNearAgree, forKey: "isNearAgree")
         
         updateNearUserAgree(isNearAgree)
+    }
+    
+    func updateUserLocation() {
+        let ref = FIRDatabase.database().reference()
+        let userLocationRef = ref.child("locations").child(UserDefaults.standard.object(forKey: "uid") as! String)
+        let locationValues = ["latitude": 0, "longtitude": 0]
+        userLocationRef.updateChildValues(locationValues)
     }
     
     func updateNearUserAgree(_ isAgree: String) {
