@@ -70,12 +70,32 @@ class VaporModel: NSObject {
                     let vapor = Vapor(uid, UserDefaults.standard.object(forKey: "uid") as! String, value["contents"] as! String, value["timer"] as! Double, value["isActive"] as! Bool, value["timestamp"] as! String)
                     self.detailVapors.append(vapor)
                 }
+                self.sortVapor()
                 self.detailVaporChangeDelegate?.didChange(self.detailVapors)
             }
             else {
                 self.detailVaporChangeDelegate?.didChange(self.detailVapors)
             }
         })
+    }
+    
+    private func sortVapor() {
+        detailVapors.sort { (object1, object2) -> Bool in
+            if object1.isActive! == object2.isActive! {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
+                let object1Timestamp = dateFormatter.date(from: object1.timestamp!)
+                let object2Timestamp = dateFormatter.date(from: object2.timestamp!)
+                let diffTime1 = Int(Date().timeIntervalSince(object1Timestamp!))
+                let diffTime2 = Int(Date().timeIntervalSince(object2Timestamp!))
+                let remainTime1 = "\(Int(object1.timer!) - diffTime1)"
+                let remainTime2 = "\(Int(object2.timer!) - diffTime2)"
+                return remainTime1 < remainTime2
+            }
+            else {
+                return object1.isActive! == true
+            }
+        }
     }
     
     func removeUserVapor(_ uid: String) {

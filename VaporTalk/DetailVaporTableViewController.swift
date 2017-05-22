@@ -23,32 +23,11 @@ class DetailVaporTableViewController: UITableViewController, DetailVaporChangeDe
         model.detailVaporChangeDelegate = self
         
         model.fetchDetailVapors(uid!)
-        sortVapor()
         setUI()
     }
     
     func didChange(_ vapors: [Vapor]) {
         self.vapors = vapors
-        sortVapor()
-    }
-    
-    func sortVapor() {
-        vapors.sort { (object1, object2) -> Bool in
-            if object1.isActive! == object2.isActive! {
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
-                let object1Timestamp = dateFormatter.date(from: object1.timestamp!)
-                let object2Timestamp = dateFormatter.date(from: object2.timestamp!)
-                let diffTime1 = Int(Date().timeIntervalSince(object1Timestamp!))
-                let diffTime2 = Int(Date().timeIntervalSince(object2Timestamp!))
-                let remainTime1 = "\(Int(object1.timer!) - diffTime1)"
-                let remainTime2 = "\(Int(object2.timer!) - diffTime2)"
-                return remainTime1 < remainTime2
-            }
-            else {
-                return object1.isActive! == true
-            }
-        }
         self.tableView.reloadData()
     }
     
@@ -64,7 +43,7 @@ class DetailVaporTableViewController: UITableViewController, DetailVaporChangeDe
     }
     
     func refreshButtonTouched() {
-        sortVapor()
+        model.fetchDetailVapors(uid!)
     }
 
     
@@ -99,24 +78,18 @@ extension DetailVaporTableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DetailVaporCell", for: indexPath) as! DetailVaporTableViewCell
         
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
-        let vaporTimestamp = dateFormatter.date(from: vapors[indexPath.row].timestamp!)
-        let diffTime = Int(Date().timeIntervalSince(vaporTimestamp!))
-        let remainTime = Int(vapors[indexPath.row].timer!) - diffTime
-        
         setCellAttr(cell, vapors[indexPath.row].isActive!)
         
         if vapors[indexPath.row].isActive! {
             cell.vaporTimestampLabel.text = vapors[indexPath.row].timestamp!
-            cell.remainTimerLabel.text = getTimeString(seconds: remainTime)
+            cell.remainTimerLabel.text = vapors[indexPath.row].getRemainTime()
             
             let storage = FIRStorage.storage()
             let contentsRef = storage.reference(withPath: "vapor/\(UserDefaults.standard.object(forKey: "uid") as! String)/\(uid!)/\(vapors[indexPath.row].contents!)")
             cell.contentImgView.sd_setImage(with: contentsRef, placeholderImage: #imageLiteral(resourceName: "NoImageAvailable"))
         }
         else {
-            cell.logLabel.text = "\(getTimeString(seconds: diffTime)) 전에 베이퍼가 왔었습니다."
+            cell.logLabel.text = "\(vapors[indexPath.row].getDiffTime()) 전에 베이퍼가 왔었습니다."
         }
         
         return cell
@@ -128,20 +101,6 @@ extension DetailVaporTableViewController {
         cell.remainTimerTitleLabel.isHidden = !flag
         cell.remainTimerLabel.isHidden = !flag
         cell.contentImgView.isHidden = !flag
-    }
-    
-    func getTimeString(seconds: Int) -> String {
-        let (h,m,_) = secondsToHoursMinutesSeconds(seconds: seconds)
-        var timeString = ""
-        if h > 0 {
-            timeString = "\(h)시간 "
-        }
-        timeString = timeString + "\(m)분"
-        return timeString
-    }
-    
-    func secondsToHoursMinutesSeconds (seconds : Int) -> (Int, Int, Int) {
-        return (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

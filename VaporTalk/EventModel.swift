@@ -45,13 +45,14 @@ class EventModel: NSObject {
             self.events.removeAll()
             
             if let dic = eventSnapshot.value as? [String: AnyObject] {
-                for (_, key) in dic {
-                    let eventDataRef = ref.child("eventData").child(key as! String)
+                for (key, _) in dic {
+                    let eventDataRef = ref.child("eventData").child(key)
                     eventDataRef.observeSingleEvent(of: .value, with: { (eventDataSnapshot) in
                         if let value = eventDataSnapshot.value as? [String: AnyObject] {
-                            let event = Event(hostUID: value["hostUID"] as! String, hostName: value["hostName"] as! String, title: value["title"] as! String, content: value["content"] as! String, imageUrl: value["imageUrl"] as! String, timer: value["timer"] as! Double, latitude: value["latitude"] as! Double, longtitude: value["longtitude"] as! Double, location: value["location"] as! String, timestamp: value["timestamp"] as! String)
+                            let event = Event(hostUID: value["hostUID"] as! String, hostName: value["hostName"] as! String, title: value["title"] as! String, content: value["content"] as! String, imageUrl: value["imageUrl"] as! String, timer: value["timer"] as! Double, latitude: value["latitude"] as! Double, longtitude: value["longtitude"] as! Double, location: value["location"] as! String, timestamp: value["timestamp"] as! String, key: key)
                             self.events.append(event)
                         }
+                        self.sortEvents()
                         self.eventChangeDelegate?.didChange(self.events)
                     })
                 }
@@ -60,5 +61,19 @@ class EventModel: NSObject {
                 self.eventChangeDelegate?.didChange(self.events)
             }
         })
+    }
+    
+    private func sortEvents() {
+        events.sort { (object1, object2) -> Bool in
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
+            let object1Timestamp = dateFormatter.date(from: object1.timestamp!)
+            let object2Timestamp = dateFormatter.date(from: object2.timestamp!)
+            let diffTime1 = Int(Date().timeIntervalSince(object1Timestamp!))
+            let diffTime2 = Int(Date().timeIntervalSince(object2Timestamp!))
+            let remainTime1 = "\(Int(object1.timer!) - diffTime1)"
+            let remainTime2 = "\(Int(object2.timer!) - diffTime2)"
+            return remainTime1 < remainTime2
+        }
     }
 }
