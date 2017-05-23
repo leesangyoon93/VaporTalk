@@ -9,28 +9,32 @@
 import UIKit
 import FirebaseAuth
 import FirebaseDatabase
+import NVActivityIndicatorView
 
-class RegisterViewController: UIViewController, UITextFieldDelegate {
-    var isNearAgree: String = "true"
-    var isCommerceAgree: String = "true"
-    var isPasswordValid: Bool = false
+class RegisterViewController: UIViewController, UITextFieldDelegate, UploadCompleteDelegate, RegisterSuccessDelegate {
+    
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var telTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var passwordCheckTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var registerButton: UIButton!
-    @IBOutlet weak var nearAgreeSegmentedControl: UISegmentedControl!
-    @IBOutlet weak var commerceAgreeSegmentedControl: UISegmentedControl!
     @IBOutlet weak var birthdayTextField: UITextField!
     @IBOutlet weak var sexTagTextField: UITextField!
     @IBOutlet weak var passwordCheckImgView: UIImageView!
+    var registerIndicator: NVActivityIndicatorView?
     
-    var sex: String = "male"
+    var userData: [String: String] = [:]
+    var gender: String = "male"
+    var isPasswordValid: Bool = false
+    
+    let userModel = UserModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        userModel.uploadCompleteDelegate = self
+        userModel.registerSuccessDelegate = self
         setUI()
     }
     
@@ -38,24 +42,17 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
         registerButton.layer.cornerRadius = 5
         registerButton.layer.masksToBounds = true
         nameTextField.becomeFirstResponder()
+        
+        let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 37.5, width: 75, height: 75)
+        registerIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballSpinFadeLoader, color: UIColor.blue, padding: 20)
+        self.view.addSubview(registerIndicator!)
+        
+        self.navigationItem.title = "회원가입"
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(backButtonTouched))
     }
     
-    @IBAction func nearAgreeValueChanged(_ sender: Any) {
-        if nearAgreeSegmentedControl.selectedSegmentIndex == 1 {
-            isNearAgree = "true"
-        }
-        else {
-            isNearAgree = "false"
-        }
-    }
-    
-    @IBAction func commerceAgreeValueChanged(_ sender: Any) {
-        if commerceAgreeSegmentedControl.selectedSegmentIndex == 1 {
-            isCommerceAgree = "true"
-        }
-        else {
-            isCommerceAgree = "false"
-        }
+    func backButtonTouched() {
+        self.dismiss(animated: true, completion: nil)
     }
     
     @IBAction func birthdayEditingChanged(_ sender: Any) {
@@ -94,53 +91,65 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func registerButtonTouched(_ sender: Any) {
+        registerIndicator?.startAnimating()
         self.view.endEditing(true)
-        guard let email = emailTextField.text, let password = passwordTextField.text, let name = nameTextField.text, let tel = telTextField.text else {
-            showAlertDialog(title: "Register Alert", message: "입력 정보를 모두 입력해주세요")
+        
+        guard let email = emailTextField.text, let password = passwordTextField.text, let name = nameTextField.text, let tel = telTextField.text, let birthday = birthdayTextField.text else {
+            showAlertDialog(title: "회원가입 오류", message: "입력 정보를 모두 입력해주세요")
             return
         }
         
-        if sexTagTextField.text == "1" {
-            sex = "male"
-        }
-        else if sexTagTextField.text == "2" {
-            sex = "female"
-        }
+        setGender()
+        UserDefaults.standard.set(true, forKey: "register")
         
         if isPasswordValid {
             FIRAuth.auth()?.createUser(withEmail: email, password: password, completion: { (user: FIRUser?, error) in
                 if error != nil {
-                    print(error ?? "")
+                    self.registerIndicator?.stopAnimating()
+                    self.showAlertDialog(title: "회원가입 오류", message: "이미 사용중인 이메일입니다.")
                     return
                 }
             
-                let defaultProfileImage: String = "https://firebasestorage.googleapis.com/v0/b/vaportalk-6725e.appspot.com/o/user.png?alt=media&token=e3dc1040-654e-4f73-9003-8313ddc42e1a"
-                
-                let ref = FIRDatabase.database().reference()
-                let userReference = ref.child("users").child((user?.uid)!)
-                let values = ["name": name, "email": email, "tel": tel, "sex": self.sex, "birthday": self.birthdayTextField.text!, "profileImage": defaultProfileImage, "isNearAgree": self.isNearAgree, "isCommerceAgree": self.isCommerceAgree]
-                
-                let lastVaporReference = ref.child("lastMessages").child((user?.uid)!)
-                let lastVaporValues = ["from": ""]
-                lastVaporReference.setValue(lastVaporValues)
-                
-                userReference.updateChildValues(values, withCompletionBlock: { (error, ref) in
-                    if error != nil {
-                        print(error ?? "")
-                        return
-                    }
-                    FIRAuth.auth()?.signIn(withEmail: email, password: password, completion: { (user: FIRUser?, error) in
-                        if error != nil {
-                            print(error ?? "")
-                            return
-                        }
-                    })
-
-                })
+                self.userData = ["uid": (user?.uid)!, "email": email, "password": password, "name": name, "tel": tel, "gender": self.gender, "birthday": birthday]
+                self.userModel.updateProfileImage(#imageLiteral(resourceName: "default-user"), self.userData["uid"]!)
             })
         }
         else {
-            showAlertDialog(title: "Register Alert", message: "비밀번호가 일치하지 않습니다")
+            self.registerIndicator?.stopAnimating()
+            showAlertDialog(title: "회원가입 오류", message: "비밀번호가 일치하지 않습니다")
+        }
+    }
+    
+    func didComplete(_ profileImage: UIImage) {
+        userModel.register(self.userData, UIImageJPEGRepresentation(profileImage, 0.1)!)
+    }
+    
+    func didSuccess(_ userData: [String: String], _ profileData: Data) {
+        FIRAuth.auth()?.signIn(withEmail: userData["email"]!, password: userData["password"]!, completion: { (user: FIRUser?, error) in
+            if error != nil {
+                print(error ?? "")
+                return
+            }
+            self.registerIndicator?.stopAnimating()
+            self.moveMainVC()
+        })
+    }
+    
+    func moveMainVC() {
+        UserDefaults.standard.set(false, forKey: "register")
+        UserDefaults.standard.set(self.userData["uid"]!, forKey: "lastUid")
+        
+        let mainViewController = self.storyboard?.instantiateViewController(withIdentifier: "MainViewController") as! MainViewController
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window?.rootViewController = mainViewController
+    }
+
+    func setGender() {
+        if sexTagTextField.text == "1" {
+            gender = "male"
+        }
+        else if sexTagTextField.text == "2" {
+            gender = "female"
         }
     }
     
@@ -152,10 +161,6 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
         self.present(alertController, animated: true, completion: nil)
     }
 
-    @IBAction func backButtonTouched(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
-    }
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if nameTextField.isEditing {
             birthdayTextField.becomeFirstResponder()
@@ -181,15 +186,5 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

@@ -25,12 +25,8 @@ class CommerceModel: NSObject {
         
         if let uploadData = UIImageJPEGRepresentation(uploadImage, 0.5) {
             storage.put(uploadData, metadata: metadata, completion: { (metadata, error) in
-                if error != nil {
-                    return
-                }
-                
                 let commerceRef = ref.child("commerceData").childByAutoId()
-                let commerceValues = ["hostUID": commerce.hostUID!, "hostName": commerce.hostName!, "title": commerce.title!, "content": commerce.content!, "imageUrl": (metadata?.name!)!, "timer": commerce.timer!, "latitude": commerce.latitude!, "longtitude": commerce.longtitude!, "location": commerce.location!, "timestamp": commerce.timestamp!, "password": commerce.password!] as [String : Any]
+                let commerceValues = ["hostUID": commerce.hostUID!, "hostName": commerce.hostName!, "title": commerce.title!, "content": commerce.content!, "imageUrl": (metadata?.name!)!, "timer": commerce.timer!, "latitude": commerce.latitude!, "longtitude": commerce.longtitude!, "location": commerce.location!, "timestamp": commerce.timestamp!, "password": commerce.password!, "distance": 1000] as [String : Any]
                 commerceRef.updateChildValues(commerceValues, withCompletionBlock: { (error, ref) in
                     let commerceDataRef = ref.child("commerceAnalysis")
                     let commerceValues = ["type": commerceData.type!, "keyword": commerceData.keyword!]

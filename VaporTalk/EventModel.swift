@@ -24,12 +24,8 @@ class EventModel: NSObject {
         
         if let uploadData = UIImageJPEGRepresentation(uploadImage, 0.5) {
             storage.put(uploadData, metadata: metadata, completion: { (metadata, error) in
-                if error != nil {
-                    return
-                }
-                
                 let eventRef = ref.child("eventData").childByAutoId()
-                let eventValues = ["hostUID": event.hostUID!, "hostName": event.hostName!, "title": event.title!, "content": event.content!, "imageUrl": (metadata?.name!)!, "timer": event.timer!, "latitude": event.latitude!, "longtitude": event.longtitude!, "location": event.location!, "timestamp": event.timestamp!] as [String : Any]
+                let eventValues = ["hostUID": event.hostUID!, "hostName": event.hostName!, "title": event.title!, "content": event.content!, "imageUrl": (metadata?.name!)!, "timer": event.timer!, "latitude": event.latitude!, "longtitude": event.longtitude!, "location": event.location!, "timestamp": event.timestamp!, "distance": 1000] as [String : Any]
                 eventRef.updateChildValues(eventValues, withCompletionBlock: { (error, ref) in
                     self.sendCompleteDelegate?.didComplete()
                 })

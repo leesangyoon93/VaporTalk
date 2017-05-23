@@ -12,75 +12,95 @@ import GoogleSignIn
 import FBSDKLoginKit
 
 class SettingViewController: UIViewController {
-    @IBOutlet weak var nearUserSwitch: UISwitch!
-    @IBOutlet weak var timeCommerceSwitch: UISwitch!
+    @IBOutlet weak var locationAgreeSwitch: UISwitch!
+    @IBOutlet weak var pushAgreeSwitch: UISwitch!
 
     override func viewDidLoad() {
         super.viewDidLoad()
     }
 
-    @IBAction func nearUserSwitchChanged(_ sender: Any) {
+    @IBAction func locationAgreeSwitchChanged(_ sender: Any) {
         let user = UserDefaults.standard
-        var isNearAgree = "true"
-        if !nearUserSwitch.isOn {
-            isNearAgree = "false"
-            updateUserLocation()
+        var isLocationAgree = "true"
+        if !locationAgreeSwitch.isOn {
+            isLocationAgree = "false"
+            resetUserLocation()
         }
-        user.set(isNearAgree, forKey: "isNearAgree")
+        user.set(isLocationAgree, forKey: "isLocationAgree")
         
-        updateNearUserAgree(isNearAgree)
+        updateLocationAgree(isLocationAgree)
     }
     
-    func updateUserLocation() {
+    func resetUserLocation() {
         let ref = FIRDatabase.database().reference()
         let userLocationRef = ref.child("locations").child(UserDefaults.standard.object(forKey: "uid") as! String)
         let locationValues = ["latitude": 0, "longtitude": 0]
         userLocationRef.updateChildValues(locationValues)
     }
     
-    func updateNearUserAgree(_ isAgree: String) {
+    func updateLocationAgree(_ isAgree: String) {
         let ref = FIRDatabase.database().reference()
         let userRef = ref.child("users").child(UserDefaults.standard.object(forKey: "uid") as! String)
-        userRef.updateChildValues(["isNearAgree": isAgree])
+        userRef.updateChildValues(["isLocationAgree": isAgree])
     }
     
-    @IBAction func timeCommerceSwitchChanged(_ sender: Any) {
+    @IBAction func pushAgreeSwitchChanged(_ sender: Any) {
         let user = UserDefaults.standard
-        var isCommerceAgree = "true"
-        if !timeCommerceSwitch.isOn {
-            isCommerceAgree = "false"
+        var isPushAgree = "true"
+        if !pushAgreeSwitch.isOn {
+            isPushAgree = "false"
+            resetFCM()
         }
-        user.set(isCommerceAgree, forKey: "isCommerceAgree")
+        user.set(isPushAgree, forKey: "isPushAgree")
         
-        updateCommerceAgree(isCommerceAgree)
+        updatePushAgree(isPushAgree)
     }
     
-    func updateCommerceAgree(_ isAgree: String) {
+    func resetFCM() {
         let ref = FIRDatabase.database().reference()
         let userRef = ref.child("users").child(UserDefaults.standard.object(forKey: "uid") as! String)
-        userRef.updateChildValues(["isCommerceAgree": isAgree])
+        userRef.updateChildValues(["fcm": ""])
+    }
+    
+    func updatePushAgree(_ isAgree: String) {
+        let ref = FIRDatabase.database().reference()
+        let userRef = ref.child("users").child(UserDefaults.standard.object(forKey: "uid") as! String)
+        userRef.updateChildValues(["isPushAgree": isAgree])
     }
     
     @IBAction func LogoutTouched(_ sender: Any) {
-        let ref = FIRDatabase.database().reference()
-        let userRef = ref.child("users").child((FIRAuth.auth()?.currentUser?.uid)!)
-        userRef.updateChildValues(["fcm": ""])
-
-        do {
-            try
-                FIRAuth.auth()!.signOut()
+        showLogoutDialog(title: "로그아웃", message: "로그아웃 하시겠습니까?")
+    }
+    
+    func showLogoutDialog(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        let logoutAction = UIAlertAction(title: "확인", style: .default) { (_) in
+            let ref = FIRDatabase.database().reference()
+            let userRef = ref.child("users").child((FIRAuth.auth()?.currentUser?.uid)!)
+            userRef.updateChildValues(["fcm": ""])
+            
+            do {
+                try
+                    FIRAuth.auth()!.signOut()
                 FBSDKLoginManager().logOut()
                 GIDSignIn.sharedInstance().signOut()
-            
-            let appDomain = Bundle.main.bundleIdentifier
-            UserDefaults.standard.removePersistentDomain(forName: appDomain!)
-            
-            let indexVC = self.storyboard?.instantiateViewController(withIdentifier: "IndexViewController") as! IndexViewController
-            let appDelegate = UIApplication.shared.delegate as! AppDelegate
-            appDelegate.window?.rootViewController = indexVC
-            
-        } catch let signOutError as NSError {
-            print ("Error signing out: %@", signOutError)
+                
+                let appDomain = Bundle.main.bundleIdentifier
+                UserDefaults.standard.removePersistentDomain(forName: appDomain!)
+                
+                let indexVC = self.storyboard?.instantiateViewController(withIdentifier: "IndexViewController") as! IndexViewController
+                let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                appDelegate.window?.rootViewController = indexVC
+                
+            } catch let signOutError as NSError {
+                print ("Error signing out: %@", signOutError)
+            }
+
         }
+        alertController.addAction(cancelAction)
+        alertController.addAction(logoutAction)
+        
+        self.present(alertController, animated: true, completion: nil)
     }
 }

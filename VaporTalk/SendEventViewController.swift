@@ -35,6 +35,9 @@ class SendEventViewController: UIViewController, UITextFieldDelegate, EventImage
 
         setUI()
         eventModel.sendCompleteDelegate = self
+        titleTextField.delegate = self
+        contentTextView.delegate = self
+        manager.delegate = self
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -59,8 +62,7 @@ class SendEventViewController: UIViewController, UITextFieldDelegate, EventImage
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Send", style: .plain, target: self, action: #selector(sendEventTouched))
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(backButtonTouched))
         
-        titleTextField.delegate = self
-        contentTextView.delegate = self
+        
         contentTextView.text = "이벤트 상세 내용"
         contentTextView.textColor = UIColor.lightGray
         contentTextView.layer.borderColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0).cgColor
@@ -75,7 +77,6 @@ class SendEventViewController: UIViewController, UITextFieldDelegate, EventImage
         eventTimePickerView.countDownDuration = 3600.0
         view.addSubview(eventTimePickerView)
         
-        manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         manager.requestWhenInUseAuthorization()
         if CLLocationManager.locationServicesEnabled() {
@@ -88,18 +89,18 @@ class SendEventViewController: UIViewController, UITextFieldDelegate, EventImage
     }
     
     func sendEventTouched() {
-        sendEventIndicator?.startAnimating()
         let imageName = Int(Date.timeIntervalSinceReferenceDate * 1000)
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
         
         if checkEventVaild() {
+            sendEventIndicator?.startAnimating()
+            
             let event = Event(hostUID: UserDefaults.standard.object(forKey: "uid") as! String, hostName: UserDefaults.standard.object(forKey: "name") as! String, title: titleTextField.text!, content: contentTextView.text, imageUrl: "\(imageName)", timer: eventTimePickerView.countDownDuration, latitude: lat!, longtitude: lon!, location: address!, timestamp: dateFormatter.string(from: Date()))
             
             eventModel.sendEvent(event: event, eventImage: eventImgView.image)
         }
         else {
-            sendEventIndicator?.stopAnimating()
             showInputAlertDialog(title: "내용 입력", message: "이벤트 제목과 내용을 모두 입력해주세요.")
         }
     }
@@ -152,9 +153,6 @@ class SendEventViewController: UIViewController, UITextFieldDelegate, EventImage
         self.dismiss(animated: true, completion: nil)
     }
 
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "TakeEventPhotoSegue" {
             let sendVaporVC = (segue.destination as! SendVaporViewController)

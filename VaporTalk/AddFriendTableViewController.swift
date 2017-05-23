@@ -34,7 +34,7 @@ class AddFriendTableViewController: UITableViewController, AnonymousUpdateDelega
 
     func setUI() {
         let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 87.5, width: 75, height: 75)
-        friendLoadIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballPulseSync, color: UIColor.blue, padding: 20)
+        friendLoadIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballSpinFadeLoader, color: UIColor.blue, padding: 20)
         self.view.addSubview(friendLoadIndicator!)
         self.navigationItem.title = "친구추가(연락처)"
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(backButtonTouched))
@@ -55,16 +55,15 @@ class AddFriendTableViewController: UITableViewController, AnonymousUpdateDelega
     }
     
     func addFriendButtonTouched(sender: UIButton) {
-        var anonymous = self.contacts[sender.tag]
         let title = "친구 추가 확인"
-        let message = "\(anonymous.name!) 님을 친구로 등록하시겠습니까?"
+        let message = "\(self.contacts[sender.tag].name!) 님을 친구로 등록하시겠습니까?"
         
         let popup = Popup.newPopup(title, message)
         let buttonOne = CancelButton(title: "CANCEL") { }
         
         let buttonTwo = DefaultButton(title: "OK") {
-            self.userModel.addFriend(anonymous)
-            anonymous.setIsFriend(true)
+            self.userModel.addFriend(self.contacts[sender.tag])
+            self.contacts[sender.tag].setIsFriend(true)
             self.tableView.reloadData()
         }
         
@@ -101,31 +100,11 @@ class AddFriendTableViewController: UITableViewController, AnonymousUpdateDelega
         })
     }
     
-    func didUpdate() {
-        anonymousList = anonymousModel.getAnonymousList()
-        contacts = anonymousModel.getContacts()
-        self.sortContacts()
+    func didUpdate(_ anonymousList: [Anonymous], _ contacts: [Anonymous]) {
+        self.anonymousList = anonymousList
+        self.contacts = contacts
         self.tableView.reloadData()
         self.friendLoadIndicator?.stopAnimating()
-    }
-    
-    func sortContacts() {
-        self.contacts.sort { (object1, object2) -> Bool in
-            if object1.name! == object2.name! {
-                return object1.tel! < object2.tel!
-            }
-            else {
-                return object1.name! < object2.name!
-            }
-        }
-        self.anonymousList.sort { (object1, object2) -> Bool in
-            if object1.name! == object2.name! {
-                return object1.tel! < object2.tel!
-            }
-            else {
-                return object1.name! < object2.name!
-            }
-        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -155,8 +134,6 @@ extension AddFriendTableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "AddFriendCell", for: indexPath) as! AddFriendSearchTableViewCell
         
-        let storage = FIRStorage.storage()
-        
         let contact: Anonymous
         if searchController.isActive && searchController.searchBar.text != "" {
             contact = filterContacts[indexPath.row]
@@ -166,9 +143,6 @@ extension AddFriendTableViewController {
         }
         
         cell.friendProfileNameLabel.text = contact.name!
-        let profileImageReference = storage.reference(withPath: "default-user.png")
-        cell.friendProfileImageView.sd_setImage(with: profileImageReference, placeholderImage: #imageLiteral(resourceName: "default-user"))
-        
         if contact.isFriend! {
             cell.addFriendButton.setTitle("베프", for: UIControlState())
             cell.addFriendButton.removeTarget(self, action: #selector(addFriendButtonTouched), for: .touchUpInside)
@@ -177,6 +151,9 @@ extension AddFriendTableViewController {
             cell.addFriendButton.setTitle("추가", for: UIControlState())
             cell.addFriendButton.addTarget(self, action: #selector(addFriendButtonTouched), for: .touchUpInside)
         }
+        
+        cell.friendProfileImageView.image = contact.profileImage!
+        
         cell.addFriendButton.layer.cornerRadius = 5
         cell.addFriendButton.layer.masksToBounds = true
         cell.addFriendButton.tag = indexPath.row

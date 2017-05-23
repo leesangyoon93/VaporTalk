@@ -16,7 +16,6 @@ target 'VaporTalk' do
   pod 'KCFloatingActionButton'
   pod 'Firebase/Database'
   pod 'Firebase/Messaging'
-  pod 'AFNetworking'
   pod 'SwiftyCam'
   pod 'PopupDialog'
   pod 'NVActivityIndicatorView'

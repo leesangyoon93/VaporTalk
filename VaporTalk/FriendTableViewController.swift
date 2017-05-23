@@ -8,16 +8,15 @@
 
 import UIKit
 import Firebase
-import FirebaseStorageUI
 import GoogleSignIn
 import KCFloatingActionButton
 import NVActivityIndicatorView
 import PopupDialog
 import CoreLocation
 
-class FriendTableViewController: UITableViewController, UITextFieldDelegate, NVActivityIndicatorViewable, CLLocationManagerDelegate {
+class FriendTableViewController: UITableViewController, UITextFieldDelegate, NVActivityIndicatorViewable, CLLocationManagerDelegate, UpdateFriendCompleteDelegate {
 
-    let model = UserModel()
+    let userModel = UserModel()
     let manager = CLLocationManager()
     
     let sections = ["내 프로필", "친구"]
@@ -25,21 +24,51 @@ class FriendTableViewController: UITableViewController, UITextFieldDelegate, NVA
     var filterFriends = [Friend]()
     
     var friendLoadIndicator: NVActivityIndicatorView?
+    let picker = UIImagePickerController()
     let searchController = UISearchController(searchResultsController: nil)
-
+    
     override func viewWillAppear(_ animated: Bool) {
-        friends = model.getFriends()
-        tableView.reloadData()
+        self.friends = userModel.getFriends()
+        self.tableView.reloadData()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
+        
+        userModel.uploadCompleteDelegate = self
+        userModel.updateFriendCompleteDelegate = self
+        
+        friendLoadIndicator?.startAnimating()
+        userModel.setFriendsProfileImage()
+        
+        picker.delegate = self
+        
+        manager.delegate = self
+        manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        
+        if UserDefaults.standard.object(forKey: "isLocationAgree") as! String == "true" {
+            manager.requestWhenInUseAuthorization()
+        }
+        
+        if CLLocationManager.locationServicesEnabled() && UserDefaults.standard.object(forKey: "isLocationAgree") as! String == "true" {
+            manager.startUpdatingLocation()
+        }
+        
+        if UserDefaults.standard.object(forKey: "isPushAgree") as! String == "true" {
+            updateUserFCM()
+        }
+    }
+    
+    func didUpdated(_ friends: [Friend]) {
+        friendLoadIndicator?.stopAnimating()
+        self.friends = friends
+        self.tableView.reloadData()
     }
     
     func setUI() {
         let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 87.5, width: 75, height: 75)
-        friendLoadIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballPulseSync, color: UIColor.blue, padding: 20)
+        friendLoadIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballSpinFadeLoader, color: UIColor.blue, padding: 20)
         self.view.addSubview(friendLoadIndicator!)
         
         self.navigationItem.title = "친구"
@@ -50,17 +79,6 @@ class FriendTableViewController: UITableViewController, UITextFieldDelegate, NVA
         searchController.dimsBackgroundDuringPresentation = false
         definesPresentationContext = true
         tableView.tableHeaderView = searchController.searchBar
-        
-        manager.delegate = self
-        manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-
-        if UserDefaults.standard.object(forKey: "isNearAgree") as! String == "true" {
-            manager.requestWhenInUseAuthorization()
-        }
-        
-        if CLLocationManager.locationServicesEnabled() && UserDefaults.standard.object(forKey: "isNearAgree") as! String == "true" {
-            manager.startUpdatingLocation()
-        }
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -100,8 +118,8 @@ class FriendTableViewController: UITableViewController, UITextFieldDelegate, NVA
         let buttonOne = CancelButton(title: "CANCEL") { }
         
         let buttonTwo = DefaultButton(title: "OK") {
-            self.model.removeFriend(friend)
-            self.friends = self.model.getFriends()
+            self.userModel.removeFriend(friend)
+            self.friends = self.userModel.getFriends()
             self.tableView.reloadData()
         }
         
@@ -109,15 +127,11 @@ class FriendTableViewController: UITableViewController, UITextFieldDelegate, NVA
         self.present(popup, animated: animated, completion: nil)
     }
     
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "SendVaporSegue" {
             let sendVaporVC = segue.destination as! SendVaporViewController
@@ -127,7 +141,6 @@ class FriendTableViewController: UITableViewController, UITextFieldDelegate, NVA
             }
         }
     }
-
 }
 
 extension FriendTableViewController {
@@ -176,10 +189,10 @@ extension FriendTableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
-        let storage = FIRStorage.storage()
         
         if indexPath.section == 0 {
             cell.nameLabel.text! = UserDefaults.standard.object(forKey: "name") as! String
+            cell.profileImgView.image = UIImage(data: UserDefaults.standard.object(forKey: "profileImage") as! Data)
         }
         else {
             let friend: Friend
@@ -190,22 +203,17 @@ extension FriendTableViewController {
                 friend = friends[indexPath.row]
             }
             cell.nameLabel.text! = friend.name!
+            cell.profileImgView.image = friend.profileImage as? UIImage
         }
-        
-        let profileImageReference = storage.reference(withPath: "default-user.png")
-        cell.profileImgView.sd_setImage(with: profileImageReference, placeholderImage: #imageLiteral(resourceName: "default-user"))
-        
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let user = UserDefaults.standard
-        let storage = FIRStorage.storage()
-        
         var profileData = [String: String]()
         
         if indexPath.section == 0 {
-            profileData = ["uid": user.object(forKey: "uid") as! String, "name": user.object(forKey: "name") as! String, "email": user.object(forKey: "email") as! String, "profileImage": user.object(forKey: "profileImage") as! String]
+            profileData = ["uid": user.object(forKey: "uid") as! String, "name": user.object(forKey: "name") as! String, "email": user.object(forKey: "email") as! String]
         }
         else {
             var friend: Friend
@@ -215,44 +223,42 @@ extension FriendTableViewController {
             else {
                 friend = friends[(self.tableView.indexPathForSelectedRow)!.row]
             }
-            profileData = ["uid": friend.uid!, "name": friend.name!, "email": friend.email!, "profileImage": friend.profileImage!]
+            profileData = ["uid": friend.uid!, "name": friend.name!, "email": friend.email!]
+        }
+        showProfilePopup(profileData, indexPath)
+        
+        self.tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func showProfilePopup(_ profileData: [String: String], _ indexPath: IndexPath) {
+        
+        var profileImage = UIImage(data: UserDefaults.standard.object(forKey: "profileImage") as! Data)
+        if indexPath.section == 1 {
+            profileImage = friends[indexPath.row].profileImage as? UIImage
         }
         
-        let popup = Popup.newImagePopup(profileData["name"]!, profileData["email"]!, #imageLiteral(resourceName: "default-user"))
+        let popup = Popup.newImagePopup(profileData["name"]!, profileData["email"]!, profileImage!)
         
-        let buttonOne = DefaultButton(title: "Send Vapor") {
+        if indexPath.section == 0 {
+            let uploadProfileImageButton = DefaultButton(title: "Update Profile Image") {
+                self.picker.allowsEditing = false
+                self.picker.sourceType = .photoLibrary
+                self.picker.mediaTypes = UIImagePickerController.availableMediaTypes(for: .photoLibrary)!
+                self.present(self.picker, animated: true, completion: nil)
+            }
+            popup.addButton(uploadProfileImageButton)
+        }
+        
+        let sendButton = DefaultButton(title: "Send Vapor") {
             self.performSegue(withIdentifier: "SendVaporSegue", sender: profileData)
         }
         
-        let buttonTwo = CancelButton(title: "CANCEL") { }
+        let cancelButton = CancelButton(title: "CANCEL") { }
         
-        popup.addButtons([buttonOne, buttonTwo])
+        popup.addButtons([sendButton, cancelButton])
         
         self.present(popup, animated: true, completion: nil)
-//        let islandRef = storage.reference(withPath: "default-user.png")
-//
-//        islandRef.data(withMaxSize: 1 * 128 * 128) { (data, error) -> Void in
-//            if error != nil {
-//                print(error ?? "")
-//                return
-//            } else {
-//                let image = UIImage(data: data!)
-//                let popup = Popup.newImagePopup(profileData["name"]!, profileData["email"]!, image!)
-//                
-//                let buttonOne = DefaultButton(title: "Send Vapor") {
-//                    self.performSegue(withIdentifier: "SendVaporSegue", sender: profileData)
-//                }
-//                
-//                let buttonTwo = CancelButton(title: "CANCEL") { }
-//                
-//                popup.addButtons([buttonOne, buttonTwo])
-//                
-//                self.present(popup, animated: true, completion: nil)
-//            }
-//        }
-        self.tableView.deselectRow(at: indexPath, animated: true)
     }
-
 }
 
 extension FriendTableViewController: UISearchResultsUpdating {
@@ -265,5 +271,25 @@ extension FriendTableViewController: UISearchResultsUpdating {
             return (friend.name?.contains(searchText))!
         })
         tableView.reloadData()
+    }
+}
+
+extension FriendTableViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate, UploadCompleteDelegate {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        self.dismiss(animated:true, completion: nil)
+        friendLoadIndicator?.startAnimating()
+        let chosenImage = info[UIImagePickerControllerOriginalImage] as! UIImage
+        self.userModel.updateProfileImage(chosenImage, UserDefaults.standard.object(forKey: "uid") as! String)
+    }
+    
+    func didComplete(_ profileImage: UIImage) {
+        friendLoadIndicator?.stopAnimating()
+        UserDefaults.standard.set(UIImageJPEGRepresentation(profileImage, 0.5), forKey: "profileImage")
+        self.tableView.reloadData()
+        
     }
 }

@@ -50,6 +50,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FIRMessagingDelegate {
             if user != nil {
                 print("Automatic Sign In: \(user?.email ?? "")")
                 
+                if UserDefaults.standard.object(forKey: "register") as? Bool != nil && UserDefaults.standard.object(forKey: "register") as? Bool == true {
+                    return
+                }
+                
                 if (UserDefaults.standard.object(forKey: "lastUid") as? String) == nil {
                     UserDefaults.standard.setValue("", forKey: "lastUid")
                 }
@@ -78,13 +82,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FIRMessagingDelegate {
                 user.set(snapshot.key , forKey: "uid")
                 user.set(dic["name"] as! String, forKey: "name")
                 user.set(dic["email"] as! String, forKey: "email")
-                user.set(dic["profileImage"] as! String, forKey: "profileImage")
                 user.set(dic["tel"] as! String, forKey: "tel")
-                user.set(dic["isNearAgree"] as! String, forKey: "isNearAgree")
-                user.set(dic["isCommerceAgree"] as! String, forKey: "isCommerceAgree")
+                user.set(dic["isLocationAgree"] as! String, forKey: "isLocationAgree")
+                user.set(dic["isPushAgree"] as! String, forKey: "isPushAgree")
+                let storage = FIRStorage.storage()
+                let profileImageReference = storage.reference().child("profile/\(snapshot.key)")
                 
-                self.resetFriends()
-                self.updateFriends(uid)
+                profileImageReference.data(withMaxSize: 1 * 1024 * 1024) { (data, error) -> Void in
+                    if (error != nil) {
+                        print(error ?? "")
+                    } else {
+                        user.set(data, forKey: "profileImage")
+                        self.resetFriends()
+                        self.updateFriends(uid)
+                    }
+                }
             }
         }, withCancel: { (error) in
             print(error)
@@ -119,12 +131,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FIRMessagingDelegate {
                     friend.uid = key
                     friend.name = (value["name"] as! String)
                     friend.email = (value["email"] as! String)
-                    friend.profileImage = (value["profileImage"] as! String)
                     friend.tel = (value["tel"] as! String)
                     delegate.saveContext()
                 }
+                self.moveMainVC(uid)
             }
-            self.moveMainVC(uid)
+            else {
+                self.moveMainVC(uid)
+            }
         }, withCancel: { (error) in
             self.moveMainVC(uid)
         })

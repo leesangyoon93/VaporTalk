@@ -161,7 +161,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param values The values to add to this array.
  * @param count  The number of elements to add.
  **/
-- (void)addValues:(const int32_t [])values count:(NSUInteger)count;
+- (void)addValues:(const int32_t [_Nullable])values count:(NSUInteger)count;
 
 /**
  * Adds the values from the given array to this array.

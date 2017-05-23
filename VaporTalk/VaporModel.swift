@@ -24,7 +24,7 @@ class VaporModel: NSObject {
         
         if let uploadData = UIImageJPEGRepresentation(vaporImage, 0.5) {
             storage.put(uploadData, metadata: metadata, completion: { (metadata, error) in
-                let lastVaporRef = self.ref.child("lastMessages").child(UserDefaults.standard.object(forKey: "uid") as! String)
+                let lastVaporRef = self.ref.child("lastMessages").child(vapor.target!)
                 lastVaporRef.setValue(["from": UserDefaults.standard.object(forKey: "uid") as! String])
                 
                 let vaporRef = self.ref.child("messages").child(vapor.target!).child(vapor.from!).childByAutoId()

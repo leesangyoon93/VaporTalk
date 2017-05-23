@@ -9,5 +9,5 @@
 import Foundation
 
 protocol AnonymousUpdateDelegate {
-    func didUpdate()
+    func didUpdate(_ anonymousList: [Anonymous], _ contacts: [Anonymous])
 }

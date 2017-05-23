@@ -34,7 +34,7 @@ class SearchFriendViewController: UIViewController {
         searchTableView.dataSource = self
         
         let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 87.5, width: 75, height: 75)
-        friendLoadIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballPulseSync, color: UIColor.blue, padding: 20)
+        friendLoadIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballSpinFadeLoader, color: UIColor.blue, padding: 20)
         self.view.addSubview(friendLoadIndicator!)
         
         self.navigationItem.title = "친구검색"
@@ -47,16 +47,15 @@ class SearchFriendViewController: UIViewController {
     }
     
     func addFriendButtonTouched(sender: UIButton) {
-        var anonymous = self.searchResults[sender.tag]
         let title = "친구 추가 확인"
-        let message = "\(anonymous.name!) 님을 친구로 등록하시겠습니까?"
+        let message = "\(self.searchResults[sender.tag].name!) 님을 친구로 등록하시겠습니까?"
         
         let popup = Popup.newPopup(title, message)
         let buttonOne = CancelButton(title: "CANCEL") { }
         
         let buttonTwo = DefaultButton(title: "OK") {
-            self.model.addFriend(anonymous)
-            anonymous.setIsFriend(true)
+            self.model.addFriend(self.searchResults[sender.tag])
+            self.searchResults[sender.tag].setIsFriend(true)
             self.searchTableView.reloadData()
         }
         
@@ -92,11 +91,9 @@ extension SearchFriendViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SearchFriendCell", for: indexPath) as! SearchTableViewCell
-        let storage = FIRStorage.storage()
         let anonymous = searchResults[indexPath.row]
-        let profileImageReference = storage.reference(withPath: "default-user.png")
         
-        cell.searchFriendProfileImage.sd_setImage(with: profileImageReference, placeholderImage: #imageLiteral(resourceName: "circle-user-7.png"))
+        cell.searchFriendProfileImage.image = anonymous.profileImage!
         cell.searchFriendNameLabel.text = anonymous.name!
         cell.searchFriendEmailLabel.text = anonymous.email!
         

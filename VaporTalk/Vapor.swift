@@ -28,23 +28,35 @@ struct Vapor {
         contents = content
     }
     
-    func getRemainTime() -> String {
-        let remainTime = Int(self.timer!) - getDiffTime()
-        let (h,m,_) = secondsToHoursMinutesSeconds(seconds: remainTime)
+    func getActiveVaporTime() -> String {
+        return getTimeToString(getRemainTime())
+    }
+    
+    func getNotActiveVaporTime() -> String {
+        return getTimeToString(getDiffTime())
+    }
+    
+    private func getTimeToString(_ time: Int) -> String {
+        let (h,m,_) = secondsToHoursMinutesSeconds(seconds: time)
         var timeString = ""
         if h > 0 {
             timeString = "\(h)시간 "
         }
         timeString = timeString + "\(m)분"
         return timeString
+
     }
     
-    func getDiffTime() -> Int {
+    private func getDiffTime() -> Int {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
         let vaporTimestamp = dateFormatter.date(from: self.timestamp!)
         let diffTime = Int(Date().timeIntervalSince(vaporTimestamp!))
         return diffTime
+    }
+    
+    private func getRemainTime() -> Int {
+        return Int(self.timer!) - getDiffTime()
     }
     
     private func secondsToHoursMinutesSeconds (seconds : Int) -> (Int, Int, Int) {

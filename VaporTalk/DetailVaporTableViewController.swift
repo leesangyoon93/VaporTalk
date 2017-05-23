@@ -82,14 +82,13 @@ extension DetailVaporTableViewController {
         
         if vapors[indexPath.row].isActive! {
             cell.vaporTimestampLabel.text = vapors[indexPath.row].timestamp!
-            cell.remainTimerLabel.text = vapors[indexPath.row].getRemainTime()
-            
+            cell.remainTimerLabel.text = vapors[indexPath.row].getActiveVaporTime()
             let storage = FIRStorage.storage()
             let contentsRef = storage.reference(withPath: "vapor/\(UserDefaults.standard.object(forKey: "uid") as! String)/\(uid!)/\(vapors[indexPath.row].contents!)")
             cell.contentImgView.sd_setImage(with: contentsRef, placeholderImage: #imageLiteral(resourceName: "NoImageAvailable"))
         }
         else {
-            cell.logLabel.text = "\(vapors[indexPath.row].getDiffTime()) 전에 베이퍼가 왔었습니다."
+            cell.logLabel.text = "\(vapors[indexPath.row].getNotActiveVaporTime()) 전에 베이퍼가 왔었습니다."
         }
         
         return cell

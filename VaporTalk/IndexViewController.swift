@@ -10,26 +10,30 @@ import UIKit
 import Firebase
 import GoogleSignIn
 import FBSDKLoginKit
+import NVActivityIndicatorView
 
 class IndexViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDelegate, UITextFieldDelegate, GIDSignInDelegate {
     
-    var accessTokenString: String? = nil
     @IBOutlet weak var googleLoginButton: GIDSignInButton!
     @IBOutlet weak var facebookLoginButton: FBSDKLoginButton!
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var generalLoginButton: UIButton!
     
+    var loginIndicator: NVActivityIndicatorView?
+    var token: String = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        GIDSignIn.sharedInstance().uiDelegate = self
+        GIDSignIn.sharedInstance().delegate = self
+        facebookLoginButton.delegate = self
         setUI()
     }
     
     func setUI() {
-        GIDSignIn.sharedInstance().uiDelegate = self
-        GIDSignIn.sharedInstance().delegate = self
-        facebookLoginButton.delegate = self
-        facebookLoginButton.readPermissions = ["public_profile", "email"]
+        facebookLoginButton.readPermissions = ["email"]
         
         emailTextField.layer.cornerRadius = 5
         emailTextField.layer.masksToBounds = true
@@ -37,13 +41,19 @@ class IndexViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
         passwordTextField.layer.masksToBounds = true
         generalLoginButton.layer.cornerRadius = 5
         generalLoginButton.layer.masksToBounds = true
+        
+        let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 37.5, width: 75, height: 75)
+        loginIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballSpinFadeLoader, color: UIColor.blue, padding: 20)
+        self.view.addSubview(loginIndicator!)
     }
 
     func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
     }
     
     @IBAction func generalLogin(_ sender: Any) {
+        loginIndicator?.startAnimating()
         FIRAuth.auth()?.signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user: FIRUser?, error) in
+            self.loginIndicator?.stopAnimating()
             if error != nil {
                 self.showAlertDialog(title: "Login Alert", message: "이메일 또는 비밀번호가 틀렸습니다")
                 return
@@ -53,40 +63,48 @@ class IndexViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
     
     func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
         if error != nil {
-            showAlertDialog(title: "Login Alert", message: "이메일 또는 비밀번호가 틀렸습니다")
             return
         }
-        
-        let accessToken = FBSDKAccessToken.current()
-        self.accessTokenString = accessToken?.tokenString
-        
-        let credentials = FIRFacebookAuthProvider.credential(withAccessToken: accessTokenString!)
-        FIRAuth.auth()?.signIn(with: credentials, completion: { (user, error) in
-            if error != nil {
-                print("Something went wrong", error ?? "")
-                return
-            }
-            self.performSegue(withIdentifier: "AdditionalDataSegue", sender: nil)
-        })
+        token = result.token.userID
+        let credentials = FIRFacebookAuthProvider.credential(withAccessToken: FBSDKAccessToken.current().tokenString)
+        checkSocialLogin(credentials)
     }
     
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
         if (error) != nil {
-            showAlertDialog(title: "Login Alert", message: "이메일 또는 비밀번호가 틀렸습니다")
             return
         }
-        
         let authentication = user.authentication
-        let credential = FIRGoogleAuthProvider.credential(withIDToken: (authentication?.idToken)!, accessToken: (authentication?.accessToken)!)
-        
-        FIRAuth.auth()?.signIn(with: credential, completion: { ( user, error) in
-            if error != nil {
-                return
-            }
-            self.performSegue(withIdentifier: "AdditionalDataSegue", sender: nil)
-        })
+        token = (authentication?.clientID)!
+        let credentials = FIRGoogleAuthProvider.credential(withIDToken: (authentication?.idToken)!, accessToken: (authentication?.accessToken)!)
+        checkSocialLogin(credentials)
     }
 
+    func checkSocialLogin(_ credentials: FIRAuthCredential) {
+        loginIndicator?.startAnimating()
+        let ref = FIRDatabase.database().reference()
+        let socialRef = ref.child("social")
+        socialRef.observeSingleEvent(of: .value, with: { (snapshot) in
+            if let dic = snapshot.value as? [String: String] {
+                let isSocialUser = dic.values.contains(self.token)
+                if isSocialUser {
+                    FIRAuth.auth()?.signIn(with: credentials, completion: { (user, error) in
+                        self.loginIndicator?.stopAnimating()
+                    })
+                }
+                else {
+                    self.loginIndicator?.stopAnimating()
+                    self.performSegue(withIdentifier: "AdditionalDataSegue", sender: credentials)
+                }
+            }
+            else {
+                self.loginIndicator?.stopAnimating()
+                self.performSegue(withIdentifier: "AdditionalDataSegue", sender: credentials)
+            }
+        }) { (error) in
+            self.loginIndicator?.stopAnimating()
+        }
+    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if emailTextField.isEditing {
@@ -109,12 +127,12 @@ class IndexViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
         
         self.present(alertController, animated: true, completion: nil)
     }
-    // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "AdditionalDataSegue" {
-            (segue.destination as! AdditionalDataViewController).accessTokenString = self.accessTokenString
+            let additionalDataVC = (segue.destination as! UINavigationController).viewControllers.first as! AdditionalDataViewController
+            additionalDataVC.credentials = sender as? FIRAuthCredential
+            additionalDataVC.token = token
         }
     }
  

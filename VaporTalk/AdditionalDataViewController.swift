@@ -8,86 +8,136 @@
 
 import UIKit
 import FBSDKLoginKit
-import FirebaseAuth
-import FirebaseDatabase
+import Firebase
 import GoogleSignIn
+import NVActivityIndicatorView
 
-class AdditionalDataViewController: UIViewController, UITextViewDelegate {
+class AdditionalDataViewController: UIViewController, UITextViewDelegate, UploadCompleteDelegate, UITextFieldDelegate, RegisterSuccessDelegate {
 
-    var accessTokenString: String? = nil
-    var sex: String = "male"
-    var isNearAgree: String = "true"
-    var isCommerceAgree: String = "true"
+    var credentials: FIRAuthCredential?
+    var gender: String = "male"
+    var userData: [String:String] = [:]
+    var token: String?
     
     @IBOutlet weak var startButton: UIButton!
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var telTextField: UITextField!
-    @IBOutlet weak var sexSegmentedControl: UISegmentedControl!
-    @IBOutlet weak var nearAgreeSegmentControl: UISegmentedControl!
-    @IBOutlet weak var commerceAgreeSegmentControl: UISegmentedControl!
+    @IBOutlet weak var birthdayTextField: UITextField!
+    @IBOutlet weak var genderTextField: UITextField!
+    var registerIndicator: NVActivityIndicatorView?
     
-    let user = FIRAuth.auth()?.currentUser
-    
-    override func viewWillAppear(_ animated: Bool) {
-        let ref = FIRDatabase.database().reference()
-        let userReference = ref.child("users").child((user?.uid)!).child("tel")
-        userReference.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
-            print(snapshot)
-            /*if let dictionary = snapshot.value as? [String: AnyObject] {
-                if dictionary["tel"] == nil {
-                    return
-                }
-                else {
-                    let mainViewController = self.storyboard?.instantiateViewController(withIdentifier: "MainViewController") as! MainViewController
-                    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                    appDelegate.window?.rootViewController = mainViewController
-                }
-            }*/
-        })
-    }
+    let userModel = UserModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        birthdayTextField.delegate = self
+        genderTextField.delegate = self
+        userModel.uploadCompleteDelegate = self
+        userModel.registerSuccessDelegate = self
+        
+        setUI()
     }
     
     func setUI() {
         startButton.layer.cornerRadius = 5
         startButton.layer.masksToBounds = true
         nameTextField.becomeFirstResponder()
+        
+        let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 37.5, width: 75, height: 75)
+        registerIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballSpinFadeLoader, color: UIColor.blue, padding: 20)
+        self.view.addSubview(registerIndicator!)
+        
+        self.navigationItem.title = "추가정보 입력"
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(backButtonTouched))
+    }
+    
+    func backButtonTouched() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func birthdayTextFieldChanged(_ sender: Any) {
+        if birthdayTextField.text!.characters.count == 6 {
+            if genderTextField.text!.characters.count != 1 {
+                genderTextField.becomeFirstResponder()
+            }
+            else {
+                view.self.endEditing(true)
+            }
+        }
+    }
+    @IBAction func genderTextFieldChanged(_ sender: Any) {
+        if genderTextField.text == "1" || genderTextField.text == "2" {
+            if genderTextField.text!.characters.count == 1 {
+                view.self.endEditing(true)
+            }
+        }
+        else {
+            genderTextField.text = ""
+        }
     }
     
     @IBAction func startButtonTouched(_ sender: Any) {
+        registerIndicator?.startAnimating()
         self.view.endEditing(true)
         
-        guard let name = nameTextField.text, let tel = telTextField.text else {
+        guard let name = nameTextField.text, let tel = telTextField.text, let birthday = birthdayTextField.text else {
             showAlertDialog(title: "Register Alert", message: "입력 정보를 모두 입력해주세요")
             return
         }
         
-        let ref = FIRDatabase.database().reference()
-        let userReference = ref.child("users").child((user?.uid)!)
+        UserDefaults.standard.set(true, forKey: "register")
+        setGender()
         
-        let values = [
-            "name": name, "email": user?.email! as Any,
-            "profileImage": user?.photoURL?.absoluteString ?? "https://firebasestorage.googleapis.com/v0/b/vaportalk-6725e.appspot.com/o/default-user.png?alt=media&token=e3dc1040-654e-4f73-9003-8313ddc42e1a",
-            "tel": tel,
-            "sex": self.sex,
-            "isNearAgree": self.isNearAgree,
-            "isCommerceAgree": self.isCommerceAgree] as [String : Any]
-        userReference.updateChildValues(values, withCompletionBlock: { (error, ref) in
+        FIRAuth.auth()?.signIn(with: self.credentials!, completion: { ( user, error) in
             if error != nil {
-                print(error ?? "")
                 return
             }
-            let mainViewController = self.storyboard?.instantiateViewController(withIdentifier: "MainViewController") as! MainViewController
-            let appDelegate = UIApplication.shared.delegate as! AppDelegate
-            appDelegate.window?.rootViewController = mainViewController
+            self.userData = ["uid": (user?.uid)!, "email": (user?.email)!, "name": name, "tel": tel, "gender": self.gender, "birthday": birthday]
+            
+            let ref = FIRDatabase.database().reference()
+            let socialRef = ref.child("social").childByAutoId()
+            socialRef.setValue(self.token!)
+            
+            self.userModel.updateProfileImage(#imageLiteral(resourceName: "default-user"), (user?.uid)!)
         })
+    }
+    
+    func moveMainVC() {
+        UserDefaults.standard.set(false, forKey: "register")
+        UserDefaults.standard.set(self.userData["uid"]!, forKey: "lastUid")
+        
+        let mainViewController = self.storyboard?.instantiateViewController(withIdentifier: "MainViewController") as! MainViewController
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window?.rootViewController = mainViewController
+    }
+    
+    func didComplete(_ profileImage: UIImage) {
+        userModel.register(userData, UIImageJPEGRepresentation(profileImage, 0.1)!)
+    }
+    
+    func didSuccess(_ userData: [String : String], _ profileData: Data) {
+        self.registerIndicator?.stopAnimating()
+        moveMainVC()
+    }
+    
+    func setGender() {
+        if genderTextField.text == "1" {
+            gender = "male"
+        }
+        else if genderTextField.text == "2" {
+            gender = "female"
+        }
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if nameTextField.isEditing {
             telTextField.becomeFirstResponder()
+        }
+        else if telTextField.isEditing {
+            birthdayTextField.becomeFirstResponder()
+        }
+        else if birthdayTextField.isEditing {
+            genderTextField.becomeFirstResponder()
         }
         else {
             textField.resignFirstResponder()
@@ -98,44 +148,6 @@ class AdditionalDataViewController: UIViewController, UITextViewDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
-
-    @IBAction func sexValueChanged(_ sender: Any) {
-        if sexSegmentedControl.selectedSegmentIndex == 0 {
-            sex = "male"
-        }
-        else {
-            sex = "female"
-        }
-    }
-    @IBAction func nearAgreeValueChanged(_ sender: Any) {
-        if nearAgreeSegmentControl.selectedSegmentIndex == 1 {
-            isNearAgree = "true"
-        }
-        else {
-            isNearAgree = "false"
-        }
-    }
-    
-    @IBAction func commerceAgreeValueChanged(_ sender: Any) {
-        if commerceAgreeSegmentControl.selectedSegmentIndex == 1 {
-            isCommerceAgree = "true"
-        }
-        else {
-            isCommerceAgree = "false"
-        }
-    }
-    
-    @IBAction func backButtonTouched(_ sender: Any) {
-        do {
-            try
-                FIRAuth.auth()!.signOut()
-            FBSDKLoginManager().logOut()
-            GIDSignIn.sharedInstance().signOut()
-        } catch let signOutError as NSError {
-            print ("Error signing out: %@", signOutError)
-        }
-        self.dismiss(animated: true, completion: nil)
-    }
     
     func showAlertDialog(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -144,15 +156,5 @@ class AdditionalDataViewController: UIViewController, UITextViewDelegate {
         
         self.present(alertController, animated: true, completion: nil)
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

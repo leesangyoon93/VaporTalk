@@ -114,7 +114,6 @@ extension FriendChoiceTableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendChoiceCell", for: indexPath) as! FriendChoiceTableViewCell
         
-        let storage = FIRStorage.storage()
         let friend: Friend
         if searchController.isActive && searchController.searchBar.text != "" {
             friend = filterFriends[indexPath.row]
@@ -124,8 +123,7 @@ extension FriendChoiceTableViewController {
         }
         
         cell.friendNameLabel.text = friend.name!
-        let profileImageReference = storage.reference(withPath: "default-user.png")
-        cell.friendProfileImgView.sd_setImage(with: profileImageReference, placeholderImage: #imageLiteral(resourceName: "default-user"))
+        cell.friendProfileImgView.image = friend.profileImage as? UIImage
         
         cell.checkButton.layer.cornerRadius = cell.checkButton.frame.width / 2.0
         cell.checkButton.layer.masksToBounds = true

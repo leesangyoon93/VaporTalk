@@ -6,7 +6,7 @@
 //  Copyright © 2017년 이상윤. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 protocol EventImageChangeDelegate {
     func didChange(selectImage: UIImage)

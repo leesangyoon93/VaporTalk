@@ -9,7 +9,6 @@
 import UIKit
 import NVActivityIndicatorView
 import Firebase
-import FirebaseStorageUI
 import PopupDialog
 
 class BoxTableViewController: UITableViewController, VaporListChangeDelegate {
@@ -17,7 +16,7 @@ class BoxTableViewController: UITableViewController, VaporListChangeDelegate {
     let model = VaporModel()
     var vapors: [String:[Vapor]] = [:]
     var nameArr: [String]?
-    var profileImgArr: [String]?
+    var profileImgArr: [UIImage]?
     var activeCountArr: [Int]?
     var notActiveCountArr: [Int]?
     var loadVaporIndicator: NVActivityIndicatorView?
@@ -41,7 +40,6 @@ class BoxTableViewController: UITableViewController, VaporListChangeDelegate {
     }
 
     func didChange(_ vapors: [String:[Vapor]]) {
-        print("box change")
         self.vapors = vapors
         
         let keys = Array(vapors.keys)
@@ -55,13 +53,21 @@ class BoxTableViewController: UITableViewController, VaporListChangeDelegate {
                 userRef.observeSingleEvent(of: .value, with: { (snapshot) in
                     let dic = snapshot.value as! [String: String]
                     self.nameArr?.append(dic["name"]!)
-                    self.profileImgArr?.append(dic["profileImage"]!)
+                    let storage = FIRStorage.storage()
+                    let profileImageReference = storage.reference().child("profile/\(uid)")
                     
-                    self.setActiveCount(uid)
-                    
-                    if self.notActiveCountArr?.count == keys.count {
-                        self.tableView.reloadData()
-                        self.loadVaporIndicator?.stopAnimating()
+                    profileImageReference.data(withMaxSize: 1 * 1024 * 1024) { (data, error) -> Void in
+                        if (error != nil) {
+                            print(error ?? "")
+                        } else {
+                            self.profileImgArr?.append(UIImage(data: data!)!)
+                            self.setActiveCount(uid)
+                            
+                            if self.notActiveCountArr?.count == keys.count {
+                                self.tableView.reloadData()
+                                self.loadVaporIndicator?.stopAnimating()
+                            }
+                        }
                     }
                 })
             }
@@ -74,7 +80,7 @@ class BoxTableViewController: UITableViewController, VaporListChangeDelegate {
     
     func resetDataArray() {
         nameArr = [String]()
-        profileImgArr = [String]()
+        profileImgArr = [UIImage]()
         activeCountArr = [Int]()
         notActiveCountArr = [Int]()
     }
@@ -144,12 +150,10 @@ extension BoxTableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BoxCell", for: indexPath) as! BoxTableViewCell
-        let storage = FIRStorage.storage()
         
         if vapors.count > 0 {
             cell.friendNameLabel.text = nameArr?[indexPath.row]
-            let profileImageReference = storage.reference(withPath: "default-user.png")
-            cell.friendProfileImgView.sd_setImage(with: profileImageReference, placeholderImage: #imageLiteral(resourceName: "default-user"))
+            cell.friendProfileImgView.image = profileImgArr?[indexPath.row]
             cell.activeVaporCountLabel.text = "\((activeCountArr?[indexPath.row])!)"
             cell.notActiveVaporCountLabel.text = "\((notActiveCountArr?[indexPath.row])!)"
         }
