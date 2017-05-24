@@ -17,6 +17,13 @@ class SettingViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setUI()
+    }
+    
+    func setUI() {
+        self.navigationItem.title = "설정"
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "logout"), style: .plain, target: self, action: #selector(logoutButtonTouched))
     }
 
     @IBAction func locationAgreeSwitchChanged(_ sender: Any) {
@@ -68,7 +75,7 @@ class SettingViewController: UIViewController {
         userRef.updateChildValues(["isPushAgree": isAgree])
     }
     
-    @IBAction func LogoutTouched(_ sender: Any) {
+    func logoutButtonTouched() {
         showLogoutDialog(title: "로그아웃", message: "로그아웃 하시겠습니까?")
     }
     

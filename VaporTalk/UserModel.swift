@@ -39,7 +39,6 @@ class UserModel: NSObject {
                 return
             }
             self.registerSuccessDelegate?.didSuccess(userData, profileData)
-            
         })
     }
     

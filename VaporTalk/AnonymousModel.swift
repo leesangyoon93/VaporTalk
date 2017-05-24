@@ -53,7 +53,7 @@ class AnonymousModel: NSObject {
         })
     }
     
-    func sortContacts() {
+    private func sortContacts() {
         self.contacts.sort { (object1, object2) -> Bool in
             if object1.name! == object2.name! {
                 return object1.tel! < object2.tel!

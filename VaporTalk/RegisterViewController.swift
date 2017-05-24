@@ -136,7 +136,7 @@ class RegisterViewController: UIViewController, UITextFieldDelegate, UploadCompl
     }
     
     func moveMainVC() {
-        UserDefaults.standard.set(false, forKey: "register")
+        UserDefaults.standard.removeObject(forKey: "register")
         UserDefaults.standard.set(self.userData["uid"]!, forKey: "lastUid")
         
         let mainViewController = self.storyboard?.instantiateViewController(withIdentifier: "MainViewController") as! MainViewController

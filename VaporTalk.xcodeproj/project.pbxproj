@@ -10,7 +10,6 @@
 		531BDE2F1E93F95D005D70D7 /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531BDE2E1E93F95D005D70D7 /* PhotoViewController.swift */; };
 		531BDE311E93F98E005D70D7 /* SwiftyRecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531BDE301E93F98E005D70D7 /* SwiftyRecordButton.swift */; };
 		531BDE331E93F9B7005D70D7 /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531BDE321E93F9B7005D70D7 /* VideoViewController.swift */; };
-		531BDE3E1E9616CA005D70D7 /* power-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 531BDE391E9616CA005D70D7 /* power-button.png */; };
 		531BDE431E968B9C005D70D7 /* AddFriendSearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531BDE421E968B9C005D70D7 /* AddFriendSearchTableViewCell.swift */; };
 		531BDE451E96A388005D70D7 /* AddFriendTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531BDE441E96A388005D70D7 /* AddFriendTableViewController.swift */; };
 		531BDE471E96A7E2005D70D7 /* FriendTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531BDE461E96A7E2005D70D7 /* FriendTableViewController.swift */; };
@@ -81,7 +80,6 @@
 		531BDE2E1E93F95D005D70D7 /* PhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
 		531BDE301E93F98E005D70D7 /* SwiftyRecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyRecordButton.swift; sourceTree = "<group>"; };
 		531BDE321E93F9B7005D70D7 /* VideoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
-		531BDE391E9616CA005D70D7 /* power-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "power-button.png"; path = "images/power-button.png"; sourceTree = SOURCE_ROOT; };
 		531BDE421E968B9C005D70D7 /* AddFriendSearchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddFriendSearchTableViewCell.swift; sourceTree = "<group>"; };
 		531BDE441E96A388005D70D7 /* AddFriendTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddFriendTableViewController.swift; sourceTree = "<group>"; };
 		531BDE461E96A7E2005D70D7 /* FriendTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendTableViewController.swift; sourceTree = "<group>"; };
@@ -250,17 +248,8 @@
 				5362BCC51E8CEB4A00D81666 /* GoogleService-Info.plist */,
 				5362BCBF1E8CEAE500D81666 /* Info.plist */,
 				5362BCC71E8CEF7C00D81666 /* VaporTalk.entitlements */,
-				5362BCD81E8CF7D300D81666 /* resource */,
 			);
 			path = VaporTalk;
-			sourceTree = "<group>";
-		};
-		5362BCD81E8CF7D300D81666 /* resource */ = {
-			isa = PBXGroup;
-			children = (
-				531BDE391E9616CA005D70D7 /* power-button.png */,
-			);
-			name = resource;
 			sourceTree = "<group>";
 		};
 		53BEB1CC1EA0821400D7A3AD /* Model */ = {
@@ -430,7 +419,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5362BCBE1E8CEAE500D81666 /* LaunchScreen.storyboard in Resources */,
-				531BDE3E1E9616CA005D70D7 /* power-button.png in Resources */,
 				5362BCC61E8CEB4A00D81666 /* GoogleService-Info.plist in Resources */,
 				5362BCBB1E8CEAE500D81666 /* Assets.xcassets in Resources */,
 				5362BCB91E8CEAE500D81666 /* Main.storyboard in Resources */,

@@ -134,11 +134,11 @@ extension BoxTableViewController {
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         if vapors.count > 0 {
-            self.tableView.separatorStyle = .singleLine
+            //self.tableView.separatorStyle = .singleLine
             return 1
         }
         else {
-            self.tableView.separatorStyle = .none
+            //self.tableView.separatorStyle = .none
             return 0;
         }
     }

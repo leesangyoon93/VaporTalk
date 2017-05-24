@@ -18,14 +18,14 @@ class VaporModel: NSObject {
     let ref = FIRDatabase.database().reference()
     
     func sendVapor(vapor: Vapor, vaporImage: UIImage) {
-        let storage = FIRStorage.storage().reference().child("vapor").child("\(vapor.target!)/\(UserDefaults.standard.object(forKey: "uid") as! String)/\(vapor.contents!)")
+        let storage = FIRStorage.storage().reference().child("vapor").child("\(vapor.target!)/\(vapor.from!)/\(vapor.contents!)")
         let metadata = FIRStorageMetadata()
         metadata.contentType = "image/jpeg"
         
         if let uploadData = UIImageJPEGRepresentation(vaporImage, 0.5) {
             storage.put(uploadData, metadata: metadata, completion: { (metadata, error) in
                 let lastVaporRef = self.ref.child("lastMessages").child(vapor.target!)
-                lastVaporRef.setValue(["from": UserDefaults.standard.object(forKey: "uid") as! String])
+                lastVaporRef.setValue(["from": vapor.from!])
                 
                 let vaporRef = self.ref.child("messages").child(vapor.target!).child(vapor.from!).childByAutoId()
                 let vaporValues = ["from": vapor.from!, "isActive": vapor.isActive!,
@@ -38,7 +38,8 @@ class VaporModel: NSObject {
     }
     
     func fetchVapors() {
-        let vaporRef = ref.child("messages").child(UserDefaults.standard.object(forKey: "uid") as! String)
+        let uid = UserDefaults.standard.object(forKey: "uid") as! String
+        let vaporRef = ref.child("messages").child(uid)
         vaporRef.observe(.value, with: { (snapshot) in
             self.allVapors.removeAll()
             if let dic = snapshot.value as? [String: AnyObject] {
@@ -46,7 +47,7 @@ class VaporModel: NSObject {
                     var vaporArr = [Vapor]()
                     for (_, data) in (value as! NSDictionary) {
                         let info = data as! [String: AnyObject]
-                        let vapor = Vapor(from , UserDefaults.standard.object(forKey: "uid") as! String, info["contents"] as! String, info["timer"] as! Double, info["isActive"] as! Bool, info["timestamp"] as! String)
+                        let vapor = Vapor(from , uid, info["contents"] as! String, info["timer"] as! Double, info["isActive"] as! Bool, info["timestamp"] as! String)
                         vaporArr.append(vapor)
                     }
                     self.allVapors.updateValue(vaporArr, forKey: from)
@@ -60,14 +61,15 @@ class VaporModel: NSObject {
     }
     
     func fetchDetailVapors(_ uid: String) {
-        let vaporRef = ref.child("messages").child(UserDefaults.standard.object(forKey: "uid") as! String).child(uid)
+        let myUid = UserDefaults.standard.object(forKey: "uid") as! String
+        let vaporRef = ref.child("messages").child(myUid).child(uid)
         
         vaporRef.observe(.value, with: { (snapshot) in
             self.detailVapors.removeAll()
             
             if let dic = snapshot.value as? [String: AnyObject] {
                 for (_, value) in dic {
-                    let vapor = Vapor(uid, UserDefaults.standard.object(forKey: "uid") as! String, value["contents"] as! String, value["timer"] as! Double, value["isActive"] as! Bool, value["timestamp"] as! String)
+                    let vapor = Vapor(uid, myUid, value["contents"] as! String, value["timer"] as! Double, value["isActive"] as! Bool, value["timestamp"] as! String)
                     self.detailVapors.append(vapor)
                 }
                 self.sortVapor()
@@ -99,10 +101,11 @@ class VaporModel: NSObject {
     }
     
     func removeUserVapor(_ uid: String) {
+        let myUid = UserDefaults.standard.object(forKey: "uid") as! String
         allVapors.removeValue(forKey: uid)
         
         let storage = FIRStorage.storage().reference()
-        let storageRef = storage.child("vapor/\(UserDefaults.standard.object(forKey: "uid") as! String)/\(uid)")
+        let storageRef = storage.child("vapor/\(myUid)/\(uid)")
         
         storageRef.delete { (error) in
             if error != nil {
@@ -110,7 +113,7 @@ class VaporModel: NSObject {
             }
         }
         
-        let vaporRef = ref.child("messages").child(UserDefaults.standard.object(forKey: "uid") as! String).child(uid)
+        let vaporRef = ref.child("messages").child(myUid).child(uid)
         vaporRef.removeValue()
         
         self.vaporListChangeDelegate?.didChange(self.allVapors)

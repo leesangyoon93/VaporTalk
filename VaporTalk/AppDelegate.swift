@@ -50,7 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FIRMessagingDelegate {
             if user != nil {
                 print("Automatic Sign In: \(user?.email ?? "")")
                 
-                if UserDefaults.standard.object(forKey: "register") as? Bool != nil && UserDefaults.standard.object(forKey: "register") as? Bool == true {
+                if UserDefaults.standard.object(forKey: "register") as? Bool != nil {
                     return
                 }
                 

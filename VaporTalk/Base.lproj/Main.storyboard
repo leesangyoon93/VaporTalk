@@ -444,7 +444,7 @@
         <scene sceneID="DcH-Vz-FCC">
             <objects>
                 <navigationController storyboardIdentifier="FriendChoiceViewController" id="Vml-Wo-GgY" customClass="FriendChoiceViewController" customModule="VaporTalk" customModuleProvider="target" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="V5b-xl-eY2">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="V5b-xl-eY2">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -543,7 +543,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xWM-3w-eRh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4800.5" y="1493.5"/>
+            <point key="canvasLocation" x="5050" y="1477"/>
         </scene>
         <!--Send Event View Controller-->
         <scene sceneID="zNg-xE-bgz">
@@ -767,7 +767,7 @@
             <objects>
                 <navigationController id="rzf-ra-5RB" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="이벤트" id="9uh-VJ-VEO"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Kbj-WW-bDi">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="Kbj-WW-bDi">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -847,7 +847,7 @@
             <objects>
                 <navigationController id="Pyt-3o-QHc" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="베이퍼박스" id="4Rs-39-X6U"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="cfO-cC-aRJ">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="cfO-cC-aRJ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -1000,7 +1000,7 @@
             <objects>
                 <navigationController id="pYi-IS-OLI" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="타임커머스" id="rgt-Jf-q2z"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="us0-j1-Tto">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="us0-j1-Tto">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -1086,7 +1086,7 @@
         <scene sceneID="8gR-rS-MZk">
             <objects>
                 <navigationController id="zg4-c3-i9L" customClass="DetailVaporViewController" customModule="VaporTalk" customModuleProvider="target" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="8UH-Oe-Dxn">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="8UH-Oe-Dxn">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -1300,7 +1300,7 @@
             <objects>
                 <navigationController id="e9Z-td-pjD" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="친구" id="xHF-Vk-pkz"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="8By-oe-cJd">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="8By-oe-cJd">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -1338,7 +1338,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="kzC-lO-wVl" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="HiM-lg-VU3">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="HiM-lg-VU3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -1356,7 +1356,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="euV-ke-K3K" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="htg-bp-keA">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="htg-bp-keA">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -1374,7 +1374,7 @@
             <objects>
                 <navigationController storyboardIdentifier="SendEventNavigationViewController" automaticallyAdjustsScrollViewInsets="NO" id="kc1-fr-TDU" customClass="SendEventNavigationViewController" customModule="VaporTalk" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="oH1-4d-Mma">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="oH1-4d-Mma">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -1392,7 +1392,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="roB-DY-wb8" customClass="DetailEventNavigationViewController" customModule="VaporTalk" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="RUf-rO-Th3">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="RUf-rO-Th3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -1410,7 +1410,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Brq-7j-pte" customClass="DetailCommerceNavigationViewController" customModule="VaporTalk" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="VPt-rW-rm6">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="VPt-rW-rm6">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -1428,7 +1428,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="QVu-N2-XSy" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="74S-3e-DdU">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="74S-3e-DdU">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -1446,7 +1446,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="k4b-ke-Sbo" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="V8z-4v-fPg">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="V8z-4v-fPg">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -1465,7 +1465,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="KoS-82-8et" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="설정" id="sYr-s8-QlC"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="MVv-Ht-qYf">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="MVv-Ht-qYf">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
