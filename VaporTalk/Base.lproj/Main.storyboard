@@ -1248,7 +1248,7 @@
         <!--친구-->
         <scene sceneID="faV-r9-46R">
             <objects>
-                <tableViewController storyboardIdentifier="asdf" title="친구" id="IKs-ME-a97" customClass="FriendTableViewController" customModule="VaporTalk" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="친구" id="IKs-ME-a97" customClass="FriendTableViewController" customModule="VaporTalk" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="28" sectionFooterHeight="28" id="baF-tM-bUQ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

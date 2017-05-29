@@ -40,7 +40,7 @@ class CommerceTableViewController: UITableViewController, CommerceChangeDelegate
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
 
-        let commerce = Event(hostUID: UserDefaults.standard.object(forKey: "uid") as! String, hostName: "롯데리아(경기대역점)", title: "불고기버거 떨이", content: "매장 영업 종료 전 잔여 불고기버거 1000원에 판매합니다.", imageUrl: "\(imageName)", timer: 60, latitude: 37.2893098, longtitude: 127.0486165, location: "경기도 수원시 영통구 이의동 795-4", timestamp: dateFormatter.string(from: Date()))
+        let commerce = Event(hostUID: UserDefaults.standard.object(forKey: "uid") as! String, hostName: "롯데리아(경기대역점)", title: "불고기버거 떨이", content: "매장 영업 종료 전 잔여 불고기버거 1000원에 판매합니다.", imageUrl: "\(imageName)", timer: 60, latitude: 37.27908944301991, longtitude: 127.0437736974064, location: "경기도 수원시 영통구 이의동 795-4", timestamp: dateFormatter.string(from: Date()))
         let commerceData = CommerceAnalysis(type: "패스트푸드", keyword: "햄버거, 패스트푸드, 불고기버거")
         commerceModel.sendCommerce(commerce: commerce, commerceData: commerceData, commerceImage: #imageLiteral(resourceName: "NoImageAvailable"))
     }

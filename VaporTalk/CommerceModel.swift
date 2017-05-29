@@ -71,7 +71,7 @@ class CommerceModel: NSObject {
         let ref = FIRDatabase.database().reference()
         let commerceRef = ref.child("commerces").child(UserDefaults.standard.object(forKey: "uid") as! String).child(commerce.key!)
         
-        let buyerRef = ref.child("buyers").child(commerce.hostUID!).child(commerce.key!).childByAutoId()
+        let buyerRef = ref.child("commerceData").child(commerce.key!).child("buyers").childByAutoId()
         let buyerValues = ["buyer": UserDefaults.standard.object(forKey: "uid") as! String, "timestamp": dateFormatter.string(from: Date())]
         buyerRef.updateChildValues(buyerValues) { (error, ref) in
             commerceRef.removeValue()

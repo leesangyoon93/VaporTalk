@@ -50,7 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FIRMessagingDelegate {
             if user != nil {
                 print("Automatic Sign In: \(user?.email ?? "")")
                 
-                if UserDefaults.standard.object(forKey: "register") as? Bool != nil {
+                if UserDefaults.standard.object(forKey: "register") as? Bool != nil && UserDefaults.standard.object(forKey: "register") as! String == "true" {
                     return
                 }
                 
@@ -62,6 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FIRMessagingDelegate {
                     self.moveMainVC((user?.uid)!)
                 }
                 else {
+                    //self.moveMainVC((user?.uid)!)
                     self.setUserData((user?.uid)!)
                 }
             } else {

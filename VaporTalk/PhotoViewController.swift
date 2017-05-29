@@ -87,7 +87,7 @@ class PhotoViewController: UIViewController, SendCompleteDelegate {
         view.addSubview(vaporTimePickerSwitchButton)
         view.addSubview(okButton)
         view.addSubview(cancelButton)
-        self.view.addSubview(sendVaporIndicator!)
+        view.addSubview(sendVaporIndicator!)
     }
     
     func cancel() {

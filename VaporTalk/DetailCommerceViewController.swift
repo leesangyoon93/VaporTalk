@@ -100,6 +100,7 @@ class DetailCommerceViewController: UIViewController, MKMapViewDelegate {
         
         alertController.addTextField { (textField) in
             textField.placeholder = "비밀번호"
+            textField.keyboardType = .numberPad
             passwordTextField = textField
         }
         

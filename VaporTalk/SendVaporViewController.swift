@@ -79,8 +79,6 @@ class SendVaporViewController: SwiftyCamViewController, UIImagePickerControllerD
         })
     }
     
-    
-    
     func swiftyCam(_ swiftyCam: SwiftyCamViewController, didFocusAtPoint point: CGPoint) {
         let focusView = UIImageView(image: #imageLiteral(resourceName: "focus"))
         focusView.center = point
