@@ -19,6 +19,7 @@ class BoxTableViewController: UITableViewController, VaporListChangeDelegate {
     var profileImgArr: [UIImage]?
     var activeCountArr: [Int]?
     var notActiveCountArr: [Int]?
+    var uidArr: [String]?
     var loadVaporIndicator: NVActivityIndicatorView?
     
     override func viewDidLoad() {
@@ -32,8 +33,8 @@ class BoxTableViewController: UITableViewController, VaporListChangeDelegate {
     }
     
     func setUI() {
-        let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 37.5, width: 75, height: 75)
-        loadVaporIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballSpinFadeLoader, color: UIColor.blue, padding: 20)
+        let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 87.5, width: 75, height: 75)
+        loadVaporIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.lineSpinFadeLoader, color: UIColor.lightGray, padding: 20)
         self.view.addSubview(loadVaporIndicator!)
         
         self.navigationItem.title = "베이퍼박스"
@@ -44,32 +45,34 @@ class BoxTableViewController: UITableViewController, VaporListChangeDelegate {
         
         let keys = Array(vapors.keys)
         let ref = FIRDatabase.database().reference()
+        let storage = FIRStorage.storage()
         
         resetDataArray()
         
         if self.vapors.count > 0 {
             for uid in keys {
-                let userRef = ref.child("users").child(uid)
-                userRef.observeSingleEvent(of: .value, with: { (snapshot) in
-                    let dic = snapshot.value as! [String: String]
-                    self.nameArr?.append(dic["name"]!)
-                    let storage = FIRStorage.storage()
-                    let profileImageReference = storage.reference().child("profile/\(uid)")
+                let profileImageReference = storage.reference().child("profile/\(uid)")
                     
-                    profileImageReference.data(withMaxSize: 1 * 1024 * 1024) { (data, error) -> Void in
-                        if (error != nil) {
-                            print(error ?? "")
-                        } else {
-                            self.profileImgArr?.append(UIImage(data: data!)!)
+                profileImageReference.data(withMaxSize: 1 * 1024 * 1024) { (data, error) -> Void in
+                    if (error != nil) {
+                        print(error ?? "")
+                    } else {
+                        self.profileImgArr?.append(UIImage(data: data!)!)
+                        
+                        let userRef = ref.child("users").child(uid)
+                        userRef.observeSingleEvent(of: .value, with: { (snapshot) in
+                            let dic = snapshot.value as! [String: String]
+                            self.nameArr?.append(dic["name"]!)
                             self.setActiveCount(uid)
+                            self.uidArr?.append(uid)
                             
                             if self.notActiveCountArr?.count == keys.count {
                                 self.tableView.reloadData()
                                 self.loadVaporIndicator?.stopAnimating()
                             }
-                        }
+                        })
                     }
-                })
+                }
             }
         }
         else {
@@ -83,6 +86,7 @@ class BoxTableViewController: UITableViewController, VaporListChangeDelegate {
         profileImgArr = [UIImage]()
         activeCountArr = [Int]()
         notActiveCountArr = [Int]()
+        uidArr = [String]()
     }
     
     func setActiveCount(_ uid: String) {
@@ -121,8 +125,7 @@ class BoxTableViewController: UITableViewController, VaporListChangeDelegate {
             let detailVaporVC = (((segue.destination as! DetailVaporViewController).viewControllers.first) as! DetailVaporTableViewController)
             detailVaporVC.barTitle = nameArr?[(self.tableView.indexPathForSelectedRow)!.row]
             
-            let keys = Array(vapors.keys)
-            let uid = keys[(self.tableView.indexPathForSelectedRow)!.row]
+            let uid = uidArr?[(self.tableView.indexPathForSelectedRow)!.row]
             detailVaporVC.uid = uid
         }
     }

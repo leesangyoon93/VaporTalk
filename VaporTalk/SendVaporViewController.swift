@@ -51,7 +51,6 @@ class SendVaporViewController: SwiftyCamViewController, UIImagePickerControllerD
         else if sendType == "event" {
             self.eventImageChangeDelegate?.didChange(selectImage: photo)
             self.dismiss(animated: true, completion: nil)
-            
         }
     }
     
@@ -114,9 +113,9 @@ class SendVaporViewController: SwiftyCamViewController, UIImagePickerControllerD
         flashEnabled = !flashEnabled
         
         if flashEnabled == true {
-            flashButton.setImage(#imageLiteral(resourceName: "flash-on-indicator"), for: UIControlState())
+            flashButton.setImage(#imageLiteral(resourceName: "camera_flash_on"), for: UIControlState())
         } else {
-            flashButton.setImage(#imageLiteral(resourceName: "flash-off"), for: UIControlState())
+            flashButton.setImage(#imageLiteral(resourceName: "camera_flash_off"), for: UIControlState())
         }
     }
     
@@ -126,19 +125,19 @@ class SendVaporViewController: SwiftyCamViewController, UIImagePickerControllerD
         self.captureButton.delegate = self
         
         flipCameraButton = UIButton(frame: CGRect(x: (((view.frame.width / 2 - 37.5) / 2) - 15.0), y: view.frame.height - 74.0, width: 30.0, height: 23.0))
-        flipCameraButton.setImage(#imageLiteral(resourceName: "flip-camera"), for: UIControlState())
+        flipCameraButton.setImage(#imageLiteral(resourceName: "camera_switch_front"), for: UIControlState())
         flipCameraButton.addTarget(self, action: #selector(cameraSwitchAction(_:)), for: .touchUpInside)
         self.view.addSubview(flipCameraButton)
         
         let test = CGFloat((view.frame.width - (view.frame.width / 2 + 37.5)) + ((view.frame.width / 2) - 37.5) - 9.0)
         
         flashButton = UIButton(frame: CGRect(x: test, y: view.frame.height - 77.5, width: 18.0, height: 30.0))
-        flashButton.setImage(#imageLiteral(resourceName: "flash-on-indicator"), for: UIControlState())
+        flashButton.setImage(#imageLiteral(resourceName: "camera_flash_on"), for: UIControlState())
         flashButton.addTarget(self, action: #selector(toggleFlashAction(_:)), for: .touchUpInside)
         self.view.addSubview(flashButton)
         
         let cancelButton = UIButton(frame: CGRect(x: 10.0, y: 10.0, width: 30.0, height: 30.0))
-        cancelButton.setImage(#imageLiteral(resourceName: "clear-button"), for: UIControlState())
+        cancelButton.setImage(#imageLiteral(resourceName: "camera_close"), for: UIControlState())
         cancelButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         self.view.addSubview(cancelButton)
     }

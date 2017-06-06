@@ -13,6 +13,7 @@ import NVActivityIndicatorView
 
 class RegisterViewController: UIViewController, UITextFieldDelegate, UploadCompleteDelegate, RegisterSuccessDelegate {
     
+    @IBOutlet weak var genderTagTextField: UITextField!
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var telTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -20,8 +21,8 @@ class RegisterViewController: UIViewController, UITextFieldDelegate, UploadCompl
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var registerButton: UIButton!
     @IBOutlet weak var birthdayTextField: UITextField!
-    @IBOutlet weak var sexTagTextField: UITextField!
     @IBOutlet weak var passwordCheckImgView: UIImageView!
+    
     var registerIndicator: NVActivityIndicatorView?
     
     var userData: [String: String] = [:]
@@ -43,12 +44,12 @@ class RegisterViewController: UIViewController, UITextFieldDelegate, UploadCompl
         registerButton.layer.masksToBounds = true
         nameTextField.becomeFirstResponder()
         
-        let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 37.5, width: 75, height: 75)
-        registerIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballSpinFadeLoader, color: UIColor.blue, padding: 20)
+        let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 87.5, width: 75, height: 75)
+        registerIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.lineSpinFadeLoader, color: UIColor.lightGray, padding: 20)
         self.view.addSubview(registerIndicator!)
         
         self.navigationItem.title = "회원가입"
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(backButtonTouched))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "back_white"), style: .plain, target: self, action: #selector(backButtonTouched))
     }
     
     func backButtonTouched() {
@@ -57,8 +58,8 @@ class RegisterViewController: UIViewController, UITextFieldDelegate, UploadCompl
     
     @IBAction func birthdayEditingChanged(_ sender: Any) {
         if birthdayTextField.text!.characters.count == 6 {
-            if sexTagTextField.text!.characters.count != 1 {
-                sexTagTextField.becomeFirstResponder()
+            if genderTagTextField.text!.characters.count != 1 {
+                genderTagTextField.becomeFirstResponder()
             }
             else {
                 emailTextField.becomeFirstResponder()
@@ -66,26 +67,28 @@ class RegisterViewController: UIViewController, UITextFieldDelegate, UploadCompl
         }
     }
     
-    @IBAction func sexTagEditingChanged(_ sender: Any) {
-        if sexTagTextField.text == "1" || sexTagTextField.text == "2" {
-            if sexTagTextField.text!.characters.count == 1 {
+    @IBAction func genderTagEditingChanged(_ sender: Any) {
+        let genderText = genderTagTextField.text!
+        if genderText == "1" || genderText == "2" {
+            if genderText.characters.count == 1 {
                 emailTextField.becomeFirstResponder()
             }
         }
         else {
-            sexTagTextField.text = ""
+            genderTagTextField.text = ""
         }
     }
+
 
     @IBAction func passwordCheckEditingChanged(_ sender: Any) {
         passwordCheckImgView.isHidden = false
         let currentPassword: String = passwordTextField.text!
         if passwordCheckTextField.text == currentPassword {
-            passwordCheckImgView.image = #imageLiteral(resourceName: "checked.png")
+            passwordCheckImgView.image = #imageLiteral(resourceName: "join_password_correct_32")
             isPasswordValid = true
         }
         else {
-            passwordCheckImgView.image = #imageLiteral(resourceName: "clear-button")
+            passwordCheckImgView.image = #imageLiteral(resourceName: "join_password_error_32")
             isPasswordValid = false
         }
     }
@@ -145,10 +148,10 @@ class RegisterViewController: UIViewController, UITextFieldDelegate, UploadCompl
     }
 
     func setGender() {
-        if sexTagTextField.text == "1" {
+        if genderTagTextField.text == "1" {
             gender = "male"
         }
-        else if sexTagTextField.text == "2" {
+        else if genderTagTextField.text == "2" {
             gender = "female"
         }
     }
@@ -166,9 +169,9 @@ class RegisterViewController: UIViewController, UITextFieldDelegate, UploadCompl
             birthdayTextField.becomeFirstResponder()
         }
         else if birthdayTextField.isEditing {
-            sexTagTextField.becomeFirstResponder()
+            genderTagTextField.becomeFirstResponder()
         }
-        else if sexTagTextField.isEditing {
+        else if genderTagTextField.isEditing {
             emailTextField.becomeFirstResponder()
         }
         else if emailTextField.isEditing {

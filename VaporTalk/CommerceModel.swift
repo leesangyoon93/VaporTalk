@@ -29,7 +29,7 @@ class CommerceModel: NSObject {
                 let commerceValues = ["hostUID": commerce.hostUID!, "hostName": commerce.hostName!, "title": commerce.title!, "content": commerce.content!, "imageUrl": (metadata?.name!)!, "timer": commerce.timer!, "latitude": commerce.latitude!, "longtitude": commerce.longtitude!, "location": commerce.location!, "timestamp": commerce.timestamp!, "password": commerce.password!, "distance": 1000] as [String : Any]
                 commerceRef.updateChildValues(commerceValues, withCompletionBlock: { (error, ref) in
                     let commerceDataRef = ref.child("commerceAnalysis")
-                    let commerceValues = ["type": commerceData.type!, "keyword": commerceData.keyword!]
+                    let commerceValues = ["category": commerceData.category!, "item": commerceData.item!, "categoryDivision": commerceData.categoryDivision!, "price": commerceData.price] as [String : Any]
                     commerceDataRef.updateChildValues(commerceValues, withCompletionBlock: { (error, ref) in
                         self.sendCompleteDelegate?.didComplete()
                     })
@@ -80,15 +80,7 @@ class CommerceModel: NSObject {
 
     func sortCommerces() {
         commerces.sort { (object1, object2) -> Bool in
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
-            let object1Timestamp = dateFormatter.date(from: object1.timestamp!)
-            let object2Timestamp = dateFormatter.date(from: object2.timestamp!)
-            let diffTime1 = Int(Date().timeIntervalSince(object1Timestamp!))
-            let diffTime2 = Int(Date().timeIntervalSince(object2Timestamp!))
-            let remainTime1 = "\(Int(object1.timer!) - diffTime1)"
-            let remainTime2 = "\(Int(object2.timer!) - diffTime2)"
-            return remainTime1 < remainTime2
+            return object1.getRemainTime() < object2.getRemainTime()
         }
     }
 }

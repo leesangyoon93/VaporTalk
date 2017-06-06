@@ -30,13 +30,18 @@ class DetailCommerceViewController: UIViewController, MKMapViewDelegate {
     
     func setUI() {
         self.navigationItem.title = "\((commerce?.hostName)!)"
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(backButtonTouched))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "back_white"), style: .plain, target: self, action: #selector(backButtonTouched))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "구매확인", style: .plain, target: self, action: #selector(buyCheckButtonTouched))
         commerceLocationLabel.text = commerce?.location
         commerceTimestampLabel.text = commerce?.timestamp
         commerceTimerLable.text = commerce?.getRemainTime()
         setCommerceImage()
         setCommerceMap()
+        commerceImgView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(detailCommerceImageTouched)))
+    }
+    
+    func detailCommerceImageTouched() {
+        self.performSegue(withIdentifier: "DetailCommerceImageSegue", sender: commerceImgView.image)
     }
     
     func setCommerceImage() {
@@ -57,6 +62,7 @@ class DetailCommerceViewController: UIViewController, MKMapViewDelegate {
         annotation.subtitle = commerce?.content
         
         commerceMapKit.addAnnotation(annotation)
+        commerceMapKit.selectAnnotation(annotation, animated: true)
     }
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -129,5 +135,11 @@ class DetailCommerceViewController: UIViewController, MKMapViewDelegate {
         alertController.addAction(defaultAction)
         
         self.present(alertController, animated: true, completion: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "DetailCommerceImageSegue" {
+            (segue.destination as! DetailImageViewController).detailImg = sender as? UIImage
+        }
     }
 }

@@ -27,7 +27,7 @@ class UserModel: NSObject {
         
         let ref = FIRDatabase.database().reference()
         let userReference = ref.child("users").child(userData["uid"]!)
-        let values = ["name": userData["name"]!, "email": userData["email"]!, "tel": userData["tel"]!, "sex": userData["gender"]!, "birthday": userData["birthday"]!, "isLocationAgree": "true", "isPushAgree": "true"] as [String: Any]
+        let values = ["name": userData["name"]!, "email": userData["email"]!, "tel": userData["tel"]!, "gender": userData["gender"]!, "birthday": userData["birthday"]!, "isLocationAgree": "true", "isPushAgree": "true"] as [String: Any]
         
         let lastVaporReference = ref.child("lastMessages").child(userData["uid"]!)
         let lastVaporValues = ["from": ""]

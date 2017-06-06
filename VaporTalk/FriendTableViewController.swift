@@ -68,13 +68,12 @@ class FriendTableViewController: UITableViewController, UITextFieldDelegate, NVA
     
     func setUI() {
         let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 87.5, width: 75, height: 75)
-        friendLoadIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballSpinFadeLoader, color: UIColor.blue, padding: 20)
+        friendLoadIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.lineSpinFadeLoader, color: UIColor.lightGray, padding: 20)
         self.view.addSubview(friendLoadIndicator!)
         
         self.navigationItem.title = "친구"
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(addFriendTouched))
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Send", style: .plain, target: self, action: #selector(sendVaporTouched))
-        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "추가", style: .plain, target: self, action: #selector(addFriendTouched))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "send_white"), style: .plain, target: self, action: #selector(sendVaporTouched))
         searchController.searchResultsUpdater = self
         searchController.dimsBackgroundDuringPresentation = false
         definesPresentationContext = true

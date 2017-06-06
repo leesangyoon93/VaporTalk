@@ -26,23 +26,18 @@ class CommerceTableViewController: UITableViewController, CommerceChangeDelegate
     }
     
     func setUI() {
-        let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 37.5, width: 75, height: 75)
-        loadCommerceIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballSpinFadeLoader, color: UIColor.blue, padding: 20)
+        let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 87.5, width: 75, height: 75)
+        loadCommerceIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.lineSpinFadeLoader, color: UIColor.lightGray, padding: 20)
         self.view.addSubview(loadCommerceIndicator!)
         
         self.navigationItem.title = "타임 커머스"
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Send(임시)", style: .plain, target: self, action: #selector(sendCommerceTouched))
+        if UserDefaults.standard.object(forKey: "name") as! String == "롯데리아" || UserDefaults.standard.object(forKey: "name") as! String == "이마트" {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "전송(임시)", style: .plain, target: self, action: #selector(sendCommerceTouched))
+        }
     }
     
-    // 임시 코드
     func sendCommerceTouched() {
-        let imageName = Int(Date.timeIntervalSinceReferenceDate * 1000)
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
-
-        let commerce = Event(hostUID: UserDefaults.standard.object(forKey: "uid") as! String, hostName: "롯데리아(경기대역점)", title: "불고기버거 떨이", content: "매장 영업 종료 전 잔여 불고기버거 1000원에 판매합니다.", imageUrl: "\(imageName)", timer: 60, latitude: 37.27908944301991, longtitude: 127.0437736974064, location: "경기도 수원시 영통구 이의동 795-4", timestamp: dateFormatter.string(from: Date()))
-        let commerceData = CommerceAnalysis(type: "패스트푸드", keyword: "햄버거, 패스트푸드, 불고기버거")
-        commerceModel.sendCommerce(commerce: commerce, commerceData: commerceData, commerceImage: #imageLiteral(resourceName: "NoImageAvailable"))
+        self.performSegue(withIdentifier: "SendCommerceSegue", sender: nil)
     }
 
     func didChange(_ commerces: [Event]) {
@@ -75,6 +70,7 @@ extension CommerceTableViewController {
         if commerces.count > 0 {
             cell.commerceTitleLabel.text = commerces[indexPath.row].title
             cell.commerceLocationLabel.text = commerces[indexPath.row].location
+            cell.commerceTimerLabel.text = commerces[indexPath.row].getRemainTime()
         }
         return cell
     }

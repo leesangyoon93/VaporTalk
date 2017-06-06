@@ -34,8 +34,8 @@ class DetailVaporTableViewController: UITableViewController, DetailVaporChangeDe
     func setUI() {
         self.tableView.separatorStyle = .singleLine
         self.navigationItem.title = barTitle
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(backButtonTouched))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Refresh", style: .plain, target: self, action: #selector(refreshButtonTouched))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "back_white"), style: .plain, target: self, action: #selector(backButtonTouched))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: self, action: #selector(refreshButtonTouched))
     }
     
     func backButtonTouched() {
@@ -45,23 +45,12 @@ class DetailVaporTableViewController: UITableViewController, DetailVaporChangeDe
     func refreshButtonTouched() {
         model.fetchDetailVapors(uid!)
     }
-
     
-//    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        cell.contentView.backgroundColor = UIColor.clear
-//        
-//        let whiteRoundedView : UIView = UIView(frame: CGRect(x: 10, y: 10, width: self.view.frame.size.width - 20, height: 140))
-//        
-//        whiteRoundedView.layer.backgroundColor = CGColor(colorSpace: CGColorSpaceCreateDeviceRGB(), components: [1.0, 1.0, 1.0, 1.0])
-//        whiteRoundedView.layer.masksToBounds = false
-//        whiteRoundedView.layer.cornerRadius = 2.0
-//        whiteRoundedView.layer.shadowOffset = CGSize(width: -1, height: 1)
-//        whiteRoundedView.layer.shadowOpacity = 0.2
-//        
-//        cell.contentView.addSubview(whiteRoundedView)
-//        cell.contentView.sendSubview(toBack: whiteRoundedView)
-//    }
-
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "DetailImageSegue" {
+            (segue.destination as! DetailImageViewController).detailImg = sender as? UIImage
+        }
+    }
 }
 
 extension DetailVaporTableViewController {
@@ -88,7 +77,7 @@ extension DetailVaporTableViewController {
             cell.contentImgView.sd_setImage(with: contentsRef, placeholderImage: #imageLiteral(resourceName: "NoImageAvailable"))
         }
         else {
-            cell.logLabel.text = "\(vapors[indexPath.row].getNotActiveVaporTime()) 전에 베이퍼가 왔었습니다."
+            cell.logLabel.text = "\(vapors[indexPath.row].getNotActiveVaporTime()) 전에 베이퍼가 도착했습니다"
         }
         
         return cell
@@ -96,8 +85,9 @@ extension DetailVaporTableViewController {
     
     func setCellAttr(_ cell: DetailVaporTableViewCell, _ flag: Bool) {
         cell.logLabel.isHidden = flag
+        cell.timerImgView.isHidden = !flag
+        cell.timestampImgView.isHidden = !flag
         cell.vaporTimestampLabel.isHidden = !flag
-        cell.remainTimerTitleLabel.isHidden = !flag
         cell.remainTimerLabel.isHidden = !flag
         cell.contentImgView.isHidden = !flag
     }
@@ -106,4 +96,11 @@ extension DetailVaporTableViewController {
         return 160.0
     }
 
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedCell = self.tableView.cellForRow(at: indexPath) as! DetailVaporTableViewCell
+        self.tableView.deselectRow(at: indexPath, animated: true)
+        if selectedCell.logLabel.isHidden {
+            self.performSegue(withIdentifier: "DetailImageSegue", sender: selectedCell.contentImgView.image)
+        }
+    }
 }

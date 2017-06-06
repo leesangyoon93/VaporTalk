@@ -34,11 +34,11 @@ class AddFriendTableViewController: UITableViewController, AnonymousUpdateDelega
 
     func setUI() {
         let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 87.5, width: 75, height: 75)
-        friendLoadIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballSpinFadeLoader, color: UIColor.blue, padding: 20)
+        friendLoadIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.lineSpinFadeLoader, color: UIColor.lightGray, padding: 20)
         self.view.addSubview(friendLoadIndicator!)
         self.navigationItem.title = "친구추가(연락처)"
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(backButtonTouched))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Search", style: .plain, target: self, action: #selector(searchFriendTouched))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "back_white"), style: .plain, target: self, action: #selector(backButtonTouched))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "이메일검색", style: .plain, target: self, action: #selector(searchFriendTouched))
         
         searchController.searchResultsUpdater = self
         searchController.dimsBackgroundDuringPresentation = false

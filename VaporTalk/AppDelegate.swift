@@ -22,6 +22,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FIRMessagingDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
+        UINavigationBar.appearance().tintColor = UIColor.white
+        
         FIRApp.configure()
         
         if #available(iOS 10.0, *) {
@@ -50,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FIRMessagingDelegate {
             if user != nil {
                 print("Automatic Sign In: \(user?.email ?? "")")
                 
-                if UserDefaults.standard.object(forKey: "register") as? Bool != nil && UserDefaults.standard.object(forKey: "register") as! String == "true" {
+                if UserDefaults.standard.object(forKey: "register") as? Bool != nil && UserDefaults.standard.object(forKey: "register") as? Bool == true {
                     return
                 }
                 
@@ -89,7 +91,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FIRMessagingDelegate {
                 let storage = FIRStorage.storage()
                 let profileImageReference = storage.reference().child("profile/\(snapshot.key)")
                 
-                profileImageReference.data(withMaxSize: 1 * 1024 * 1024) { (data, error) -> Void in
+                profileImageReference.data(withMaxSize: 5 * 1024 * 1024) { (data, error) -> Void in
                     if (error != nil) {
                         print(error ?? "")
                     } else {

@@ -30,13 +30,18 @@ class DetailEventViewController: UIViewController, MKMapViewDelegate {
     
     func setUI() {
         self.navigationItem.title = "\((event?.hostName)!)"
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(backButtonTouched))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "back_white"), style: .plain, target: self, action: #selector(backButtonTouched))
         
         eventLocationLabel.text = event?.location
         eventTimestampLabel.text = event?.timestamp
         remainEventTimerLabel.text = event?.getRemainTime()
         setEventImage()
         setEventMap()
+        eventImgView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(detailEventImageTouched)))
+    }
+    
+    func detailEventImageTouched() {
+        self.performSegue(withIdentifier: "DetailEventImageSegue", sender: eventImgView.image)
     }
     
     func setEventImage() {
@@ -57,6 +62,7 @@ class DetailEventViewController: UIViewController, MKMapViewDelegate {
         annotation.subtitle = event?.content
         
         eventMapKit.addAnnotation(annotation)
+        eventMapKit.selectAnnotation(annotation, animated: true)
     }
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -87,6 +93,12 @@ class DetailEventViewController: UIViewController, MKMapViewDelegate {
     
     func backButtonTouched() {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "DetailEventImageSegue" {
+            (segue.destination as! DetailImageViewController).detailImg = sender as? UIImage
+        }
     }
 
 }

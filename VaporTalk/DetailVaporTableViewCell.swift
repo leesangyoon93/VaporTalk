@@ -13,8 +13,9 @@ class DetailVaporTableViewCell: UITableViewCell {
     @IBOutlet weak var remainTimerLabel: UILabel!
     @IBOutlet weak var vaporTimestampLabel: UILabel!
     @IBOutlet weak var logLabel: UILabel!
-    @IBOutlet weak var remainTimerTitleLabel: UILabel!
     @IBOutlet weak var contentImgView: UIImageView!
+    @IBOutlet weak var timestampImgView: UIImageView!
+    @IBOutlet weak var timerImgView: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()

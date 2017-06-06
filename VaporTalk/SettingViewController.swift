@@ -23,7 +23,7 @@ class SettingViewController: UIViewController {
     
     func setUI() {
         self.navigationItem.title = "설정"
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "logout"), style: .plain, target: self, action: #selector(logoutButtonTouched))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "로그아웃", style: .plain, target: self, action: #selector(logoutButtonTouched))
     }
 
     @IBAction func locationAgreeSwitchChanged(_ sender: Any) {

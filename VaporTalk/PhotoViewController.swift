@@ -51,7 +51,7 @@ class PhotoViewController: UIViewController, SendCompleteDelegate {
         model.sendCompleteDelegate = self
         
         let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 37.5, width: 75, height: 75)
-        sendVaporIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballSpinFadeLoader, color: UIColor.blue, padding: 20)
+        sendVaporIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.lineSpinFadeLoader, color: UIColor.lightGray, padding: 20)
 
         self.view.backgroundColor = UIColor.gray
         let backgroundImageView = UIImageView(frame: view.frame)
@@ -59,11 +59,11 @@ class PhotoViewController: UIViewController, SendCompleteDelegate {
         backgroundImageView.image = backgroundImage
         
         let cancelButton = UIButton(frame: CGRect(x: 10.0, y: 10.0, width: 30.0, height: 30.0))
-        cancelButton.setImage(#imageLiteral(resourceName: "clear-button"), for: UIControlState())
+        cancelButton.setImage(#imageLiteral(resourceName: "camera_close"), for: UIControlState())
         cancelButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         
         let okButton = UIButton(frame: CGRect(x: self.view.frame.width - 40, y: 10, width: 30, height: 30))
-        okButton.setImage(#imageLiteral(resourceName: "send-button"), for: UIControlState())
+        okButton.setImage(#imageLiteral(resourceName: "send_blue_50"), for: UIControlState())
         okButton.addTarget(self, action: #selector(sendButtonTouched), for: .touchUpInside)
         
         pickerBackgroundView.frame = CGRect(x: 10, y: self.view.frame.height - 200, width: self.view.frame.width / 1.5, height: 150)
@@ -78,7 +78,7 @@ class PhotoViewController: UIViewController, SendCompleteDelegate {
         vaporTimePickerView.countDownDuration = 300.0
         
         let vaporTimePickerSwitchButton = UIButton(frame: CGRect(x: 10, y: self.view.frame.height - 40, width: 30, height: 30))
-        vaporTimePickerSwitchButton.setImage(#imageLiteral(resourceName: "alarm-clock"), for: UIControlState())
+        vaporTimePickerSwitchButton.setImage(#imageLiteral(resourceName: "timer"), for: UIControlState())
         vaporTimePickerSwitchButton.addTarget(self, action: #selector(timePickerSwitchTouched), for: .touchUpInside)
         
         view.addSubview(backgroundImageView)

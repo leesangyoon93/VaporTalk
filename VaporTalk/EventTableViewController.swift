@@ -26,12 +26,12 @@ class EventTableViewController: UITableViewController, EventChangeDelegate {
     }
     
     func setUI() {
-        let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 37.5, width: 75, height: 75)
-        loadEventIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballSpinFadeLoader, color: UIColor.blue, padding: 20)
+        let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 87.5, width: 75, height: 75)
+        loadEventIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.lineSpinFadeLoader, color: UIColor.lightGray, padding: 20)
         self.view.addSubview(loadEventIndicator!)
         
         self.navigationItem.title = "베이퍼 이벤트"
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Send", style: .plain, target: self, action: #selector(sendEventTouched))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "send_white"), style: .plain, target: self, action: #selector(sendEventTouched))
     }
     
     func didChange(_ events: [Event]) {
@@ -71,6 +71,7 @@ extension EventTableViewController {
         if events.count > 0 {
             cell.eventTitleLabel.text = events[indexPath.row].title
             cell.eventLocationLabel.text = events[indexPath.row].location
+            cell.eventTimerLabel.text = events[indexPath.row].getRemainTime()
         }
         return cell
     }

@@ -50,6 +50,9 @@ class VaporModel: NSObject {
                         let vapor = Vapor(from , uid, info["contents"] as! String, info["timer"] as! Double, info["isActive"] as! Bool, info["timestamp"] as! String)
                         vaporArr.append(vapor)
                     }
+                    vaporArr.sort(by: { (vapor1, vapor2) -> Bool in
+                        return vapor1.getRemainTime() < vapor2.getRemainTime()
+                    })
                     self.allVapors.updateValue(vaporArr, forKey: from)
                 }
                 self.vaporListChangeDelegate?.didChange(self.allVapors)
@@ -84,14 +87,14 @@ class VaporModel: NSObject {
     private func sortVapor() {
         detailVapors.sort { (object1, object2) -> Bool in
             if object1.isActive! == object2.isActive! {
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
-                let object1Timestamp = dateFormatter.date(from: object1.timestamp!)
-                let object2Timestamp = dateFormatter.date(from: object2.timestamp!)
-                let diffTime1 = Int(Date().timeIntervalSince(object1Timestamp!))
-                let diffTime2 = Int(Date().timeIntervalSince(object2Timestamp!))
-                let remainTime1 = "\(Int(object1.timer!) - diffTime1)"
-                let remainTime2 = "\(Int(object2.timer!) - diffTime2)"
+                var remainTime1 = object1.getRemainTime()
+                var remainTime2 = object2.getRemainTime()
+                if remainTime1 < 0 {
+                    remainTime1 = remainTime1 * -1
+                }
+                if remainTime2 < 0 {
+                    remainTime2 = remainTime2 * -1
+                }
                 return remainTime1 < remainTime2
             }
             else {

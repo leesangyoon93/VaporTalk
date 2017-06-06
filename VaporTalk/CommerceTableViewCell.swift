@@ -12,6 +12,7 @@ class CommerceTableViewCell: UITableViewCell {
 
     @IBOutlet weak var commerceTitleLabel: UILabel!
     @IBOutlet weak var commerceLocationLabel: UILabel!
+    @IBOutlet weak var commerceTimerLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

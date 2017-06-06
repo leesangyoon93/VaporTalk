@@ -61,15 +61,7 @@ class EventModel: NSObject {
     
     private func sortEvents() {
         events.sort { (object1, object2) -> Bool in
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
-            let object1Timestamp = dateFormatter.date(from: object1.timestamp!)
-            let object2Timestamp = dateFormatter.date(from: object2.timestamp!)
-            let diffTime1 = Int(Date().timeIntervalSince(object1Timestamp!))
-            let diffTime2 = Int(Date().timeIntervalSince(object2Timestamp!))
-            let remainTime1 = "\(Int(object1.timer!) - diffTime1)"
-            let remainTime2 = "\(Int(object2.timer!) - diffTime2)"
-            return remainTime1 < remainTime2
+            return object1.getRemainTime() < object2.getRemainTime()
         }
     }
 }

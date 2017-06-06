@@ -9,12 +9,15 @@
 import Foundation
 
 struct CommerceAnalysis {
-    let type: String?
-    let keyword: String?
+    let category: String?
+    let item: String?
+    let categoryDivision: String?
+    let price: Int
     
-    
-    init(type: String, keyword: String) {
-        self.type = type
-        self.keyword = keyword
+    init(category: String, item: String, categoryDivision: String, price: Int) {
+        self.category = category
+        self.item = item
+        self.categoryDivision = categoryDivision
+        self.price = price
     }
 }

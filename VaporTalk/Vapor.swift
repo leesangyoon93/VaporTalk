@@ -55,7 +55,7 @@ struct Vapor {
         return diffTime
     }
     
-    private func getRemainTime() -> Int {
+    public func getRemainTime() -> Int {
         return Int(self.timer!) - getDiffTime()
     }
     

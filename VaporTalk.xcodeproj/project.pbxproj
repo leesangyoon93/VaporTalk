@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		530C4DC91EDDD21B004D1C8E /* DetailImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530C4DC81EDDD21B004D1C8E /* DetailImageViewController.swift */; };
+		53171D131EE2CDFD00871109 /* SendCommerceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53171D121EE2CDFD00871109 /* SendCommerceViewController.swift */; };
 		531BDE2F1E93F95D005D70D7 /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531BDE2E1E93F95D005D70D7 /* PhotoViewController.swift */; };
 		531BDE311E93F98E005D70D7 /* SwiftyRecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531BDE301E93F98E005D70D7 /* SwiftyRecordButton.swift */; };
 		531BDE331E93F9B7005D70D7 /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531BDE321E93F9B7005D70D7 /* VideoViewController.swift */; };
@@ -77,6 +79,8 @@
 /* Begin PBXFileReference section */
 		2D9C4BDE7AD68093A0F6A4D9 /* Pods_VaporTalk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VaporTalk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		426A7CD1DDA429F931BF0AD5 /* Pods-VaporTalk.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VaporTalk.debug.xcconfig"; path = "Pods/Target Support Files/Pods-VaporTalk/Pods-VaporTalk.debug.xcconfig"; sourceTree = "<group>"; };
+		530C4DC81EDDD21B004D1C8E /* DetailImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailImageViewController.swift; sourceTree = "<group>"; };
+		53171D121EE2CDFD00871109 /* SendCommerceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendCommerceViewController.swift; sourceTree = "<group>"; };
 		531BDE2E1E93F95D005D70D7 /* PhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
 		531BDE301E93F98E005D70D7 /* SwiftyRecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyRecordButton.swift; sourceTree = "<group>"; };
 		531BDE321E93F9B7005D70D7 /* VideoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
@@ -287,12 +291,14 @@
 				53D69A281EA7D02400A450A2 /* DetailVaporTableViewController.swift */,
 				53D340971ECD98270033D57D /* EventTableViewController.swift */,
 				53EE6BE11ECEFD69005E930E /* DetailEventViewController.swift */,
+				530C4DC81EDDD21B004D1C8E /* DetailImageViewController.swift */,
 				53D3409D1ECD9C650033D57D /* SendEventViewController.swift */,
 				533BB0231ED186B600A5FD52 /* CommerceTableViewController.swift */,
 				533BB0331ED1952D00A5FD52 /* DetailCommerceViewController.swift */,
 				5362BD421E8FE75400D81666 /* SettingViewController.swift */,
 				533BB0351ED1A23800A5FD52 /* Cell */,
 				533BB0361ED1A27500A5FD52 /* NavigationVC */,
+				53171D121EE2CDFD00871109 /* SendCommerceViewController.swift */,
 			);
 			name = MainVC;
 			sourceTree = "<group>";
@@ -516,6 +522,7 @@
 				5362CD061E933B9300D81666 /* SendVaporViewController.swift in Sources */,
 				53EE6BDA1ECDD2B3005E930E /* EventImageChangeDelegate.swift in Sources */,
 				53B31E071EA6489600A1E5B3 /* VaporChangeDelegate.swift in Sources */,
+				53171D131EE2CDFD00871109 /* SendCommerceViewController.swift in Sources */,
 				531BDE331E93F9B7005D70D7 /* VideoViewController.swift in Sources */,
 				53BEB1DB1EA1003F00D7A3AD /* MainViewController.swift in Sources */,
 				53D69A2B1EA7D9CF00A450A2 /* DetailVaporViewController.swift in Sources */,
@@ -527,6 +534,7 @@
 				531BDE311E93F98E005D70D7 /* SwiftyRecordButton.swift in Sources */,
 				53D340A21ECD9E8E0033D57D /* Event.swift in Sources */,
 				5362CCEE1E90BEA900D81666 /* UserModel.swift in Sources */,
+				530C4DC91EDDD21B004D1C8E /* DetailImageViewController.swift in Sources */,
 				533BB0301ED18FC900A5FD52 /* CommerceChangeDelegate.swift in Sources */,
 				53BEB1D71EA0D33D00D7A3AD /* SearchTableViewCell.swift in Sources */,
 				531BDE2F1E93F95D005D70D7 /* PhotoViewController.swift in Sources */,

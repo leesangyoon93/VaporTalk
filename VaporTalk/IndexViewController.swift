@@ -43,7 +43,7 @@ class IndexViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
         generalLoginButton.layer.masksToBounds = true
         
         let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 37.5, width: 75, height: 75)
-        loginIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballSpinFadeLoader, color: UIColor.blue, padding: 20)
+        loginIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.lineSpinFadeLoader, color: UIColor.lightGray, padding: 20)
         self.view.addSubview(loginIndicator!)
     }
 

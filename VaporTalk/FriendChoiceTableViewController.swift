@@ -11,7 +11,7 @@ import NVActivityIndicatorView
 import Firebase
 import FirebaseStorageUI
 
-class FriendChoiceTableViewController: UITableViewController, UISearchResultsUpdating {
+class FriendChoiceTableViewController: UITableViewController, UISearchResultsUpdating, SendCompleteDelegate {
 
     let vaporModel = VaporModel()
     var sendVaporIndicator: NVActivityIndicatorView?
@@ -21,6 +21,7 @@ class FriendChoiceTableViewController: UITableViewController, UISearchResultsUpd
     let searchController = UISearchController(searchResultsController: nil)
     var selectImage: UIImage?
     var timer: Double?
+    var completeCount = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,16 +29,17 @@ class FriendChoiceTableViewController: UITableViewController, UISearchResultsUpd
         friends = model.getFriends()
         
         setUI()
+        vaporModel.sendCompleteDelegate = self
     }
     
     func setUI() {
-        let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 37.5, width: 75, height: 75)
-        sendVaporIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.ballSpinFadeLoader, color: UIColor.blue, padding: 20)
+        let frame = CGRect(x: self.view.frame.width / 2 - 37.5, y: self.view.frame.height / 2 - 87.5, width: 75, height: 75)
+        sendVaporIndicator = NVActivityIndicatorView(frame: frame, type: NVActivityIndicatorType.lineSpinFadeLoader, color: UIColor.lightGray, padding: 20)
         self.view.addSubview(sendVaporIndicator!)
         
         self.navigationItem.title = "친구선택"
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(backButtonTouched))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Send", style: .plain, target: self, action: #selector(sendVaporTouched))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "back_white"), style: .plain, target: self, action: #selector(backButtonTouched))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "send_white"), style: .plain, target: self, action: #selector(sendVaporTouched))
         
         searchController.searchResultsUpdater = self
         searchController.dimsBackgroundDuringPresentation = false
@@ -51,22 +53,23 @@ class FriendChoiceTableViewController: UITableViewController, UISearchResultsUpd
     
     func sendVaporTouched() {
         sendVaporIndicator?.startAnimating()
-        var completeCount = 0
+        
         for target in selectedFriends {
             let imageName = Int(Date.timeIntervalSinceReferenceDate * 1000)
             let dateFormatter = DateFormatter()
-            dateFormatter.timeStyle = .medium
-            dateFormatter.dateStyle = .long
+            dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
             
             let vapor = Vapor(UserDefaults.standard.object(forKey: "uid") as! String, target.uid!, "\(imageName)", self.timer!, true, dateFormatter.string(from: Date()))
             
             vaporModel.sendVapor(vapor: vapor, vaporImage: selectImage!)
-            completeCount = completeCount + 1
-            
-            if completeCount == self.selectedFriends.count {
-                self.sendVaporIndicator?.stopAnimating()
-                self.showAlertDialog(title: "베이퍼 전송 완료", message: "친구들에게 베이퍼 전송이 완료되었습니다.")
-            }
+        }
+    }
+    
+    func didComplete() {
+        completeCount = completeCount + 1
+        if completeCount == self.selectedFriends.count {
+            self.sendVaporIndicator?.stopAnimating()
+            self.showAlertDialog(title: "베이퍼 전송 완료", message: "친구들에게 베이퍼 전송이 완료되었습니다.")
         }
     }
     
@@ -131,10 +134,10 @@ extension FriendChoiceTableViewController {
         cell.checkButton.addTarget(self, action: #selector(checkButtonToggle), for: .touchUpInside)
         
         if selectedFriends.contains(friend) {
-            cell.checkButton.setBackgroundImage(#imageLiteral(resourceName: "selected"), for: UIControlState())
+            cell.checkButton.setBackgroundImage(#imageLiteral(resourceName: "check_yes"), for: UIControlState())
         }
         else {
-            cell.checkButton.setBackgroundImage(#imageLiteral(resourceName: "diselected"), for: UIControlState())
+            cell.checkButton.setBackgroundImage(#imageLiteral(resourceName: "check_no"), for: UIControlState())
         }
         
         return cell
